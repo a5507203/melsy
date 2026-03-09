@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>墨悉科技 — AI Agent 赋能实体世界</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #090910;
+  --ink-2: #0f0f1c;
+  --ink-3: #121222;
+  --paper: #f0ede6;
+  --gold: #c8a96e;
+  --gold-b: #e2bf80;
+  --blue: #4a9eff;
+  --muted: #9999b0;
+  --lg: rgba(200,169,110,.17);
+  --lb: rgba(74,158,255,.17);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:'Noto Sans SC',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.5}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:22px 60px;background:rgba(9,9,16,.6);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,169,110,.08);transition:all .4s cubic-bezier(.4,0,.2,1)}
+nav.scrolled{padding:14px 60px;background:rgba(9,9,16,.88);border-bottom-color:rgba(200,169,110,.12);box-shadow:0 4px 30px rgba(0,0,0,.25)}
+.logo{font-family:'Noto Serif SC',serif;font-size:21px;font-weight:600;letter-spacing:.06em;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:14px}
+.logo em{font-style:normal;color:var(--gold)}
+.logo::after{content:'';display:block;width:28px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.45}
+.nav-links{list-style:none;display:flex;gap:12px;align-items:center}
+.nav-links li{display:flex;align-items:center}
+.nav-links li:not(:last-child)::after{content:'·';color:var(--gold);opacity:.5;font-size:10px;margin-left:12px}
+.nav-links a{text-decoration:none;color:rgba(240,237,230,.92);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;transition:color .3s;position:relative;padding:6px 0}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:1px;background:var(--gold);transition:all .3s ease;transform:translateX(-50%)}
+.nav-links a:hover{color:var(--paper)}
+.nav-links a:hover::after{width:100%}
+.nav-links .cta{border:1px solid var(--gold);padding:9px 22px;color:var(--gold)!important;font-size:11px!important;letter-spacing:.18em!important;transition:all .25s!important}
+.nav-links .cta:hover{background:var(--gold);color:var(--ink)!important}
+.nav-links .cta::after{display:none}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.ham span{display:block;width:24px;height:1.5px;background:var(--paper);transition:all .3s}
+.mob-menu{display:none;position:fixed;inset:0;z-index:199;background:rgba(9,9,16,.97);flex-direction:column;justify-content:center;align-items:center;gap:40px;backdrop-filter:blur(12px)}
+.mob-menu.open{display:flex}
+.mob-menu a{text-decoration:none;font-family:'Noto Serif SC',serif;font-size:28px;font-weight:300;color:var(--paper);letter-spacing:.05em;transition:color .2s}
+.mob-menu a:hover{color:var(--gold)}
+.mob-menu .xbtn{position:absolute;top:24px;right:28px;font-size:30px;color:var(--muted);cursor:pointer;background:none;border:none;color:var(--paper)}
+
+/* HELPERS */
+.tag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.tag::before{content:'';width:36px;height:1px;background:var(--gold);opacity:.5}
+.tag.blue{color:var(--blue)}.tag.blue::before{background:var(--blue)}
+.tag.center{justify-content:center}
+h2.hl{font-family:'Noto Serif SC',serif;font-weight:300;font-size:clamp(34px,4.5vw,58px);line-height:1.17;letter-spacing:-.02em}
+h2.hl em{font-style:normal;color:var(--gold)}
+h2.hl em.b{color:var(--blue)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:140px 60px 100px;position:relative;overflow:hidden}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,169,110,.033) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,.033) 1px,transparent 1px);background-size:72px 72px}
+.orb1{position:absolute;top:8%;right:4%;width:580px;height:580px;background:radial-gradient(circle,rgba(200,169,110,.055) 0%,transparent 65%);pointer-events:none}
+.orb2{position:absolute;bottom:-8%;left:-4%;width:460px;height:460px;background:radial-gradient(circle,rgba(74,158,255,.04) 0%,transparent 65%);pointer-events:none}
+.hero-ey{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px;margin-bottom:28px;opacity:0;animation:fup .7s ease .15s forwards}
+.hero-ey::before{content:'';width:40px;height:1px;background:var(--gold)}
+.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(46px,7.5vw,100px);font-weight:300;line-height:1.08;letter-spacing:-.025em;max-width:860px;opacity:0;animation:fup .8s ease .3s forwards}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{margin-top:32px;max-width:480px;font-size:15.5px;color:rgba(240,237,230,.75);line-height:1.9;opacity:0;animation:fup .8s ease .5s forwards}
+.hero-act{margin-top:52px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;opacity:0;animation:fup .8s ease .7s forwards}
+.btn-g{background:var(--gold);color:var(--ink);padding:15px 36px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;font-weight:500;font-family:'Noto Sans SC',sans-serif;transition:all .25s;display:inline-block}
+.btn-g:hover{background:var(--gold-b);transform:translateY(-2px)}
+.btn-gh{color:rgba(240,237,230,.78);font-size:13px;letter-spacing:.08em;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color .25s}
+.btn-gh:hover{color:var(--paper)}
+.hero-anch{position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:12px;opacity:0;animation:fup .6s ease 1s forwards}
+.anch-l{width:1px;height:52px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pulse 2s ease-in-out infinite}
+.anch-t{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--muted);writing-mode:vertical-rl}
+
+/* PRODUCTS OVERVIEW */
+.prod-ov{padding:100px 60px;background:var(--ink)}
+.prod-ov .sh{margin-bottom:60px}
+.ptwo{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--lg)}
+.pc{background:var(--ink);padding:56px 52px;position:relative;overflow:hidden;transition:background .35s}
+.pc:hover{background:rgba(200,169,110,.025)}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .45s ease}
+.pc:hover::before{transform:scaleX(1)}
+.pc.b::before{background:linear-gradient(90deg,var(--blue),transparent)}
+.pnum{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--muted);margin-bottom:28px}
+.pico{width:64px;height:64px;margin-bottom:28px}.pico svg{width:100%;height:100%}
+.pname{font-family:'Noto Serif SC',serif;font-size:28px;font-weight:300;margin-bottom:10px;letter-spacing:-.01em}
+.ptag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--gold);margin-bottom:22px}
+.pc.b .ptag{color:var(--blue)}
+.pdesc{font-size:14.5px;color:rgba(240,237,230,.75);line-height:1.85;margin-bottom:36px;max-width:380px}
+.pfts{display:flex;flex-direction:column;gap:10px;margin-bottom:44px}
+.pft{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:rgba(240,237,230,.72)}
+.pfd{width:4px;height:4px;background:var(--gold);border-radius:50%;margin-top:7px;flex-shrink:0}
+.pc.b .pfd{background:var(--blue)}
+.plink{display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;transition:gap .3s}
+.pc.b .plink{color:var(--blue)}.plink:hover{gap:18px}
+
+/* DEEP SECTIONS */
+.deep{padding:100px 60px;border-top:1px solid var(--lg)}
+.deep.arc{background:var(--ink-2)}
+.deep.log{background:var(--ink-3);border-top:1px solid var(--lb)}
+.deep-hd{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:flex-end;margin-bottom:72px}
+.deep-bg{font-family:'Space Mono',monospace;font-size:72px;font-weight:700;line-height:1;color:var(--gold);opacity:.065;letter-spacing:-.04em;user-select:none}
+.deep-bg.b{color:var(--blue)}
+
+/* ARC 3 letters */
+.arc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--lg);margin-bottom:2px}
+.arc-it{background:var(--ink-2);padding:40px 36px;border-top:2px solid transparent;transition:all .3s}
+.arc-it:hover{background:rgba(200,169,110,.03);border-top-color:var(--gold)}
+.arc-ch{font-family:'Noto Serif SC',serif;font-size:52px;font-weight:300;color:var(--gold);opacity:.2;line-height:1;margin-bottom:16px}
+.arc-it h3{font-size:16px;font-weight:400;margin-bottom:10px}
+.arc-it p{font-size:13.5px;color:rgba(240,237,230,.78);line-height:1.8}
+
+/* component grids */
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--lg)}
+.cgrid.bg{background:var(--lb)}
+.ci{background:var(--ink-2);padding:36px 32px;transition:background .3s;position:relative}
+.ci:hover{background:rgba(200,169,110,.03)}
+.log .ci{background:var(--ink-3)}
+.log .ci:hover{background:rgba(74,158,255,.028)}
+.cico{width:44px;height:44px;margin-bottom:18px}.cico svg{width:100%;height:100%}
+.cico::after{content:'';display:block;width:24px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-top:10px;opacity:.38}
+.cgrid.bg .cico::after{background:linear-gradient(90deg,var(--blue),transparent)}
+.ci h4{font-size:14.5px;font-weight:500;margin-bottom:8px}
+.ci p{font-size:14px;color:rgba(240,237,230,.78);line-height:1.75}
+.s2{grid-column:span 2}
+
+/* logistics flow */
+.lflow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:2px;position:relative}
+.fs{padding:40px 32px;background:var(--ink-3);border:1px solid var(--lb);border-right:none;position:relative;transition:background .3s}
+.fs:last-child{border-right:1px solid var(--lb)}
+.fs:hover{background:rgba(74,158,255,.038)}
+.fnum{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.35em;color:var(--blue);opacity:.6;margin-bottom:18px}
+.fico{width:36px;height:36px;margin-bottom:16px}.fico svg{width:100%;height:100%}
+.fs h4{font-size:15px;font-weight:500;margin-bottom:8px}
+.fs p{font-size:14px;color:rgba(240,237,230,.78);line-height:1.75}
+.fs:not(:last-child)::after{content:'›';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--blue);opacity:.4;z-index:1}
+
+/* VALUE */
+.val{padding:100px 60px;background:var(--ink);border-top:1px solid var(--lg)}
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--lg);margin-top:60px}
+.vi{background:var(--ink);padding:48px 40px;border-top:2px solid transparent;transition:all .3s}
+.vi:hover{background:rgba(200,169,110,.022);border-top-color:var(--gold)}
+.vico{margin-bottom:20px}
+.vtitle{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:400;margin-bottom:12px;line-height:1.4}
+.vdesc{font-size:14px;color:rgba(240,237,230,.75);line-height:1.8}
+
+/* CTA */
+.cta{padding:120px 60px;text-align:center;position:relative;overflow:hidden;background:var(--ink-2);border-top:1px solid var(--lg)}
+.cta-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(200,169,110,.05) 0%,transparent 70%);pointer-events:none}
+.cta-sub{font-size:15px;color:rgba(240,237,230,.75);margin-bottom:48px}
+.cta-bts{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{background:rgba(0,0,0,.5);border-top:1px solid var(--lg);padding:64px 60px 0;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px}
+.fa .logo{display:block;margin-bottom:18px;font-size:19px;text-decoration:none}
+.fa p{font-size:14px;color:rgba(240,237,230,.72);line-height:1.9;max-width:240px}
+.fc h5{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:13px}
+.fc ul a{font-size:14px;color:rgba(240,237,230,.72);text-decoration:none;transition:color .25s}
+.fc ul a:hover{color:var(--paper)}
+.fbot{border-top:1px solid var(--lg);margin-top:48px;padding:22px 0;display:flex;justify-content:space-between;align-items:center}
+.fbot p{font-family:'Space Mono',monospace;font-size:11px;color:rgba(240,237,230,.55);letter-spacing:.04em}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.rv.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+/* KEYFRAMES */
+@keyframes fup{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  nav{padding:18px 24px}
+  .nav-links{display:none}
+  .ham{display:flex}
+
+  .hero{padding:96px 24px 80px}
+  .hero-anch{left:24px}
+
+  .prod-ov{padding:64px 24px}
+  .ptwo{grid-template-columns:1fr}
+  .pc{padding:40px 28px}
+
+  .deep{padding:64px 24px}
+  .deep-hd{grid-template-columns:1fr}
+  .deep-bg{display:none}
+  .arc-row{grid-template-columns:1fr}
+  .cgrid{grid-template-columns:1fr 1fr}
+  .s2{grid-column:span 2}
+  .lflow{grid-template-columns:1fr 1fr}
+  .fs:nth-child(2){border-right:1px solid var(--lb)}
+  .fs:nth-child(even)::after{display:none}
+  .fs:nth-child(1)::after,.fs:nth-child(3)::after{display:none}
+
+  .val{padding:64px 24px}
+  .vgrid{grid-template-columns:1fr 1fr}
+
+  .cta{padding:80px 24px}
+  footer{grid-template-columns:1fr 1fr;padding:48px 24px 0;gap:36px}
+  .fa{grid-column:span 2}
+  .fbot{flex-direction:column;gap:10px;text-align:center}
+}
+
+@media(max-width:480px){
+  .cgrid{grid-template-columns:1fr}
+  .s2{grid-column:span 1}
+  .lflow{grid-template-columns:1fr}
+  .fs{border-right:1px solid var(--lb)!important}
+  .fs::after{display:none!important}
+  .vgrid{grid-template-columns:1fr 1fr}
+  footer{grid-template-columns:1fr}
+  .fa{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">墨<em>悉</em>科技</a>
+  <ul class="nav-links">
+    <li><a href="#arc">ARC 系统</a></li>
+    <li><a href="#log">运单 Agent</a></li>
+    <li><a href="#about">关于</a></li>
+  </ul>
+  <div class="ham" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mob-menu" id="mm">
+  <button class="xbtn" onclick="toggleMenu()">×</button>
+  <a href="#arc" onclick="toggleMenu()">ARC 系统</a>
+  <a href="#log" onclick="toggleMenu()">运单 Agent</a>
+  <a href="#about" onclick="toggleMenu()">关于</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hgrid"></div>
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="hero-ey">Melsy Technology — AI Agent Platform</div>
+  <h1>AI Agent<br><em>赋能</em>实体世界<br>的每一次决策</h1>
+  <p class="hero-sub">让 AI Agent 替代人工，在复杂、高频、实时的现实场景中自主运转。</p>
+  <div class="hero-act">
+    <a href="#products" class="btn-g">探索产品</a>
+  </div>
+  <div class="hero-anch">
+    <div class="anch-l"></div>
+    <span class="anch-t">Scroll</span>
+  </div>
+</section>
+
+<!-- ===================== PRODUCTS OVERVIEW ===================== -->
+<section class="prod-ov" id="products">
+  <div class="sh rv">
+    <div class="tag">核心产品</div>
+    <h2 class="hl">两个垂直场景，<em>同一个</em>智能内核</h2>
+  </div>
+  <div class="ptwo">
+
+    <!-- ARC -->
+    <div class="pc rv">
+      <div class="pnum">01 — Drone Intelligence</div>
+      <div class="pico">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="23" y="23" width="18" height="18" rx="2.5" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,.07)"/>
+          <circle cx="32" cy="32" r="4" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.12)"/>
+          <circle cx="32" cy="32" r="1.8" fill="#c8a96e" opacity=".45"/>
+          <line x1="23" y1="23" x2="11" y2="11" stroke="#c8a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="41" y1="23" x2="53" y2="11" stroke="#c8a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="23" y1="41" x2="11" y2="53" stroke="#c8a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="41" y1="41" x2="53" y2="53" stroke="#c8a96e" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="11" cy="11" r="3.5" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.09)"/>
+          <circle cx="53" cy="11" r="3.5" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.09)"/>
+          <circle cx="11" cy="53" r="3.5" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.09)"/>
+          <circle cx="53" cy="53" r="3.5" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.09)"/>
+          <ellipse cx="11" cy="11" rx="7" ry="2" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 11 11)"/>
+          <ellipse cx="53" cy="11" rx="7" ry="2" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 53 11)"/>
+          <ellipse cx="11" cy="53" rx="7" ry="2" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 11 53)"/>
+          <ellipse cx="53" cy="53" rx="7" ry="2" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 53 53)"/>
+          <circle cx="32" cy="32" r="20" stroke="#c8a96e" stroke-width=".6" stroke-dasharray="2 4" opacity=".17"/>
+          <circle cx="32" cy="32" r="27" stroke="#c8a96e" stroke-width=".4" stroke-dasharray="1 6" opacity=".09"/>
+        </svg>
+      </div>
+      <h3 class="pname">ARC 无人机系统</h3>
+      <div class="ptag">Autonomy · Reliable · Collaboration</div>
+      <p class="pdesc">AI Agent 赋能的无人机操作系统。从单机规划到机群协同，ARC 让无人机像有意识一样工作，人类仅需在关键节点审批。</p>
+      <div class="pfts">
+        <div class="pft"><div class="pfd"></div><span>AI Agent 自主规划飞行路径与任务</span></div>
+        <div class="pft"><div class="pfd"></div><span>多机协同引擎，实时协调机群行为</span></div>
+        <div class="pft"><div class="pfd"></div><span>前端控制台提供人工审批节点</span></div>
+        <div class="pft"><div class="pfd"></div><span>智能摄像头模块：现场实时识别与分析</span></div>
+        <div class="pft"><div class="pfd"></div><span>后台管理系统，全链路数据可视化</span></div>
+      </div>
+      <a href="#arc" class="plink">深入了解 ARC →</a>
+    </div>
+
+    <!-- Logistics -->
+    <div class="pc b rv d2">
+      <div class="pnum">02 — Logistics Intelligence</div>
+      <div class="pico">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 6 L52 18 L52 42 L32 54 L12 42 L12 18 Z" stroke="#4a9eff" stroke-width="1.4" fill="rgba(74,158,255,.04)"/>
+          <path d="M32 6 L32 30 M32 30 L52 18 M32 30 L12 18" stroke="#4a9eff" stroke-width="1" opacity=".38"/>
+          <path d="M32 6 L52 18 L32 30 L12 18 Z" fill="rgba(74,158,255,.07)" stroke="none"/>
+          <path d="M14 52 Q24 46 32 49 Q40 52 50 46" stroke="#4a9eff" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="3 2.5" opacity=".68"/>
+          <circle cx="14" cy="52" r="2.5" fill="rgba(74,158,255,.14)" stroke="#4a9eff" stroke-width="1.2"/>
+          <circle cx="32" cy="49" r="2.5" fill="rgba(74,158,255,.14)" stroke="#4a9eff" stroke-width="1.2"/>
+          <circle cx="50" cy="46" r="3" fill="rgba(74,158,255,.24)" stroke="#4a9eff" stroke-width="1.3"/>
+          <path d="M48.5 46 L49.8 47.5 L52.5 44.2" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="52" cy="10" r="6" fill="rgba(74,158,255,.12)" stroke="#4a9eff" stroke-width="1"/>
+          <path d="M52 7.5 L52 11.5" stroke="#4a9eff" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="52" cy="13.5" r="1" fill="#4a9eff"/>
+        </svg>
+      </div>
+      <h3 class="pname">运单 AI Agent</h3>
+      <div class="ptag">Track · Alert · Guarantee</div>
+      <p class="pdesc">不再需要人工盯屏幕。AI Agent 自动追踪每一笔运单，感知实时状态，异常秒级预警，查询准确率趋近 100%。</p>
+      <div class="pfts">
+        <div class="pft"><div class="pfd"></div><span>自动运单追踪，全程无需人工介入</span></div>
+        <div class="pft"><div class="pfd"></div><span>实时状态更新，毫秒级数据同步</span></div>
+        <div class="pft"><div class="pfd"></div><span>异常智能识别，自动触发汇报流程</span></div>
+        <div class="pft"><div class="pfd"></div><span>准确率保障体系，服务质量可衡量、可追溯</span></div>
+        <div class="pft"><div class="pfd"></div><span>多平台数据聚合，统一查询入口</span></div>
+      </div>
+      <a href="#log" class="plink">深入了解运单 Agent →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== ARC DEEP ===================== -->
+<section class="deep arc" id="arc">
+  <div class="deep-hd rv">
+    <div>
+      <div class="tag">产品深度 · 01</div>
+      <h2 class="hl">ARC — 无人机<em>自主协同</em>系统</h2>
+    </div>
+    <div class="deep-bg">ARC</div>
+  </div>
+
+  <div class="arc-row rv">
+    <div class="arc-it">
+      <div class="arc-ch">A</div>
+      <h3>Autonomy · 自主性</h3>
+      <p>AI Agent 自主完成任务规划、路径决策与障碍规避。无需持续人工指令，从起点到终点全程自主执行。</p>
+    </div>
+    <div class="arc-it d1">
+      <div class="arc-ch">R</div>
+      <h3>Reliable · 可靠性</h3>
+      <p>系统级冗余与实时故障检测。在极端环境、通讯干扰下仍能维持核心任务，自动降级而不中断。</p>
+    </div>
+    <div class="arc-it d2">
+      <div class="arc-ch">C</div>
+      <h3>Collaboration · 协同性</h3>
+      <p>多机协同引擎支持大规模机群任务编排。AI 动态分配任务、平衡负载、处理冲突，实现真正集群智能。</p>
+    </div>
+  </div>
+
+  <div class="cgrid rv" style="margin-top:2px">
+    <!-- 前端控制台 -->
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <rect x="3" y="7" width="30" height="20" rx="2" stroke="#c8a96e" stroke-width="1.3"/>
+          <path d="M3 22 L33 22" stroke="#c8a96e" stroke-width=".7" opacity=".4"/>
+          <rect x="8" y="12" width="12" height="1.8" rx=".9" fill="#c8a96e" opacity=".4"/>
+          <rect x="8" y="15.5" width="8" height="1.5" rx=".75" fill="#c8a96e" opacity=".25"/>
+          <rect x="8" y="24" width="6" height="2.5" rx="1" fill="#c8a96e" opacity=".65"/>
+          <rect x="16" y="24" width="6" height="2.5" rx="1" stroke="#c8a96e" stroke-width=".7" opacity=".35"/>
+          <path d="M11 27v5M22 27v5" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M6 32h24" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+          <circle cx="38" cy="14" r="4" stroke="#c8a96e" stroke-width="1.1" opacity=".55"/>
+          <path d="M33.5 24c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="#c8a96e" stroke-width="1.1" stroke-linecap="round" opacity=".55"/>
+        </svg>
+      </div>
+      <h4>前端控制台</h4>
+      <p>简洁的人工审批界面。AI 提案，人类决策，把控权始终在人手中。</p>
+    </div>
+    <!-- AI 规划引擎 -->
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <line x1="6" y1="14" x2="18" y2="9"  stroke="#c8a96e" stroke-width=".8" opacity=".35"/>
+          <line x1="6" y1="14" x2="18" y2="22" stroke="#c8a96e" stroke-width=".8" opacity=".35"/>
+          <line x1="6" y1="30" x2="18" y2="22" stroke="#c8a96e" stroke-width=".8" opacity=".35"/>
+          <line x1="6" y1="30" x2="18" y2="35" stroke="#c8a96e" stroke-width=".8" opacity=".35"/>
+          <line x1="18" y1="9"  x2="30" y2="16" stroke="#c8a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="18" y1="22" x2="30" y2="16" stroke="#c8a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="18" y1="22" x2="30" y2="28" stroke="#c8a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="18" y1="35" x2="30" y2="28" stroke="#c8a96e" stroke-width=".8" opacity=".5"/>
+          <line x1="30" y1="16" x2="40" y2="22" stroke="#c8a96e" stroke-width="1" opacity=".7"/>
+          <line x1="30" y1="28" x2="40" y2="22" stroke="#c8a96e" stroke-width="1" opacity=".7"/>
+          <circle cx="6"  cy="14" r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="6"  cy="30" r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="18" cy="9"  r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="18" cy="22" r="2.8" stroke="#c8a96e" stroke-width="1.4" fill="rgba(200,169,110,.14)"/>
+          <circle cx="18" cy="35" r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="30" cy="16" r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="30" cy="28" r="2.2" stroke="#c8a96e" stroke-width="1.1" fill="rgba(200,169,110,.1)"/>
+          <circle cx="40" cy="22" r="3"   fill="rgba(200,169,110,.2)" stroke="#c8a96e" stroke-width="1.4"/>
+          <circle cx="40" cy="22" r="1.3" fill="#c8a96e"/>
+        </svg>
+      </div>
+      <h4>AI 规划引擎</h4>
+      <p>任务拆解、路径规划、实时重规划。异常时主动上报，Agent 全程自主执行。</p>
+    </div>
+    <!-- 多机协同 -->
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <g transform="translate(7,21) scale(.5)">
+            <rect x="-5" y="-5" width="10" height="10" rx="1.5" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,.08)"/>
+            <line x1="-5" y1="-5" x2="-10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="-5" x2="10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="-5" y1="5" x2="-10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="5" x2="10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="-10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 -10 -10)"/>
+            <ellipse cx="10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 10 -10)"/>
+            <ellipse cx="-10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 -10 10)"/>
+            <ellipse cx="10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 10 10)"/>
+          </g>
+          <g transform="translate(32,10) scale(.45)">
+            <rect x="-5" y="-5" width="10" height="10" rx="1.5" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,.08)"/>
+            <line x1="-5" y1="-5" x2="-10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="-5" x2="10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="-5" y1="5" x2="-10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="5" x2="10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="-10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 -10 -10)"/>
+            <ellipse cx="10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 10 -10)"/>
+            <ellipse cx="-10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 -10 10)"/>
+            <ellipse cx="10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 10 10)"/>
+          </g>
+          <g transform="translate(32,34) scale(.45)">
+            <rect x="-5" y="-5" width="10" height="10" rx="1.5" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,.08)"/>
+            <line x1="-5" y1="-5" x2="-10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="-5" x2="10" y2="-10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="-5" y1="5" x2="-10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="5" x2="10" y2="10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="-10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 -10 -10)"/>
+            <ellipse cx="10" cy="-10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 10 -10)"/>
+            <ellipse cx="-10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(35 -10 10)"/>
+            <ellipse cx="10" cy="10" rx="5" ry="1.8" stroke="#c8a96e" stroke-width="1" opacity=".55" transform="rotate(-35 10 10)"/>
+          </g>
+          <path d="M13 21 Q20 16 26 12" stroke="#c8a96e" stroke-width=".9" stroke-dasharray="2.5 2" opacity=".5"/>
+          <path d="M13 23 Q20 28 26 32" stroke="#c8a96e" stroke-width=".9" stroke-dasharray="2.5 2" opacity=".5"/>
+          <path d="M28 12 L28 32" stroke="#c8a96e" stroke-width=".8" stroke-dasharray="2 2.5" opacity=".35"/>
+          <circle cx="20" cy="17" r="1.2" fill="#c8a96e" opacity=".65"/>
+          <circle cx="20" cy="28" r="1.2" fill="#c8a96e" opacity=".65"/>
+        </svg>
+      </div>
+      <h4>多机协同模块</h4>
+      <p>机群通信与任务动态分配。支持数十架无人机实时协作，无冲突执行。</p>
+    </div>
+    <!-- 智能摄像头 -->
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <rect x="4" y="12" width="26" height="18" rx="2.5" stroke="#c8a96e" stroke-width="1.3"/>
+          <circle cx="17" cy="21" r="6.5" stroke="#c8a96e" stroke-width="1.1"/>
+          <circle cx="17" cy="21" r="4"   stroke="#c8a96e" stroke-width="1" fill="rgba(200,169,110,.07)"/>
+          <circle cx="17" cy="21" r="1.8" fill="rgba(200,169,110,.22)" stroke="#c8a96e" stroke-width=".8"/>
+          <path d="M14.5 18.5 Q15.8 17.5 17 18" stroke="#c8a96e" stroke-width=".7" stroke-linecap="round" opacity=".5"/>
+          <rect x="12" y="9" width="6" height="3" rx="1" stroke="#c8a96e" stroke-width="1.1"/>
+          <circle cx="27" cy="16" r="1.3" fill="#c8a96e" opacity=".55"/>
+          <path d="M30 13 L40 7"  stroke="#c8a96e" stroke-width=".9" stroke-linecap="round" opacity=".38"/>
+          <path d="M30 21 L42 21" stroke="#c8a96e" stroke-width=".9" stroke-linecap="round" opacity=".38"/>
+          <path d="M30 29 L40 35" stroke="#c8a96e" stroke-width=".9" stroke-linecap="round" opacity=".38"/>
+          <rect x="35" y="9"  width="7" height="7" rx="1" stroke="#c8a96e" stroke-width=".8" stroke-dasharray="2 1.5" opacity=".55"/>
+          <rect x="36" y="19" width="6" height="9" rx="1" stroke="#c8a96e" stroke-width=".8" stroke-dasharray="2 1.5" opacity=".38"/>
+        </svg>
+      </div>
+      <h4>智能摄像头</h4>
+      <p>眼睛 + 大脑一体化。设备端实时识别与分析，低延迟回传关键信息。</p>
+    </div>
+  </div>
+
+  <!-- 后台管理 full row -->
+  <div class="cgrid rv" style="margin-top:2px">
+    <div class="ci" style="grid-column:1/-1">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <rect x="2" y="5" width="40" height="28" rx="2" stroke="#c8a96e" stroke-width="1.3"/>
+          <rect x="2" y="5" width="40" height="6" rx="2" fill="rgba(200,169,110,.08)" stroke="none"/>
+          <path d="M2 11 L42 11" stroke="#c8a96e" stroke-width=".6" opacity=".35"/>
+          <circle cx="6.5" cy="8"  r="1.1" fill="#c8a96e" opacity=".45"/>
+          <circle cx="10.5" cy="8" r="1.1" fill="#c8a96e" opacity=".28"/>
+          <circle cx="14.5" cy="8" r="1.1" fill="#c8a96e" opacity=".18"/>
+          <rect x="6"  y="26" width="2.5" height="6"  rx=".5" fill="#c8a96e" opacity=".65"/>
+          <rect x="10" y="22" width="2.5" height="10" rx=".5" fill="#c8a96e" opacity=".45"/>
+          <rect x="14" y="18" width="2.5" height="14" rx=".5" fill="#c8a96e" opacity=".32"/>
+          <line x1="22" y1="13" x2="22" y2="33" stroke="#c8a96e" stroke-width=".5" opacity=".25"/>
+          <path d="M24 28 L28 22 L32 25 L36 16 L40 20" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="28" cy="22" r="1.4" fill="#c8a96e"/>
+          <circle cx="36" cy="16" r="1.4" fill="#c8a96e"/>
+          <rect x="25" y="13.5" width="9" height="1.4" rx=".7" fill="#c8a96e" opacity=".28"/>
+          <rect x="25" y="16.5" width="6" height="1.4" rx=".7" fill="#c8a96e" opacity=".18"/>
+          <path d="M16 33 L16 39 M28 33 L28 39" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M10 39 L34 39" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h4>后台管理系统</h4>
+      <p>全链路数据可视化平台。飞行记录、任务统计、设备健康状态、历史回放，一屏掌控所有运营数据。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LOGISTICS DEEP ===================== -->
+<section class="deep log" id="log">
+  <div class="deep-hd rv">
+    <div>
+      <div class="tag blue">产品深度 · 02</div>
+      <h2 class="hl">运单 AI Agent — <em class="b">自动追踪</em>，实时感知</h2>
+    </div>
+    <div class="deep-bg b">LOG</div>
+  </div>
+
+  <!-- 4-step flow -->
+  <div class="lflow rv">
+    <div class="fs">
+      <div class="fnum">STEP 01</div>
+      <div class="fico">
+        <svg viewBox="0 0 36 36" fill="none">
+          <rect x="4" y="8" width="28" height="20" rx="2" stroke="#4a9eff" stroke-width="1.3"/>
+          <path d="M4 14 L32 14" stroke="#4a9eff" stroke-width=".7" opacity=".4"/>
+          <rect x="8" y="18" width="10" height="1.5" rx=".75" fill="#4a9eff" opacity=".4"/>
+          <rect x="8" y="21" width="7"  height="1.5" rx=".75" fill="#4a9eff" opacity=".28"/>
+          <circle cx="29" cy="11" r="1.2" fill="#4a9eff" opacity=".6"/>
+        </svg>
+      </div>
+      <h4>运单接入</h4>
+      <p>多平台数据源聚合，运单信息自动同步到统一 Agent 队列，无需手动录入。</p>
+    </div>
+    <div class="fs">
+      <div class="fnum">STEP 02</div>
+      <div class="fico">
+        <svg viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="12" stroke="#4a9eff" stroke-width="1.2" opacity=".35"/>
+          <circle cx="18" cy="18" r="7"  stroke="#4a9eff" stroke-width="1"   opacity=".5"/>
+          <circle cx="18" cy="18" r="2.5" stroke="#4a9eff" stroke-width="1" fill="rgba(74,158,255,.12)"/>
+          <path d="M18 18 L18 6"  stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
+          <path d="M18 18 L28 12" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".35"/>
+          <circle cx="25" cy="12" r="2" fill="rgba(74,158,255,.3)" stroke="#4a9eff" stroke-width="1"/>
+        </svg>
+      </div>
+      <h4>实时追踪</h4>
+      <p>Agent 持续轮询物流节点状态，毫秒级更新，确保每笔运单数据始终最新。</p>
+    </div>
+    <div class="fs">
+      <div class="fnum">STEP 03</div>
+      <div class="fico">
+        <svg viewBox="0 0 36 36" fill="none">
+          <path d="M4 18 L8 18 L10 12 L12 22 L14 16 L16 20 L20 6 L22 30 L24 18 L28 18 L32 18" stroke="#4a9eff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="21" cy="10" r="3.5" fill="rgba(74,158,255,.15)" stroke="#4a9eff" stroke-width="1"/>
+          <path d="M21 8 L21 11" stroke="#4a9eff" stroke-width="1.3" stroke-linecap="round"/>
+          <circle cx="21" cy="12.5" r=".9" fill="#4a9eff"/>
+        </svg>
+      </div>
+      <h4>异常感知</h4>
+      <p>AI 模型实时识别延误、丢件、状态异常。一旦触发阈值，立即启动预警流程。</p>
+    </div>
+    <div class="fs">
+      <div class="fnum">STEP 04</div>
+      <div class="fico">
+        <svg viewBox="0 0 36 36" fill="none">
+          <rect x="7" y="4" width="22" height="28" rx="2" stroke="#4a9eff" stroke-width="1.3"/>
+          <path d="M12 12 L24 12" stroke="#4a9eff" stroke-width="1" stroke-linecap="round" opacity=".45"/>
+          <path d="M12 16 L24 16" stroke="#4a9eff" stroke-width="1" stroke-linecap="round" opacity=".3"/>
+          <path d="M12 20 L19 20" stroke="#4a9eff" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+          <circle cx="26" cy="26" r="7" fill="rgba(74,158,255,.15)" stroke="#4a9eff" stroke-width="1.2"/>
+          <path d="M23 26 L25 28.5 L30 23" stroke="#4a9eff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h4>自动汇报</h4>
+      <p>异常自动推送给指定负责人，生成结构化报告，准确率数据实时统计存档。</p>
+    </div>
+  </div>
+
+  <!-- 4 capability cards -->
+  <div class="cgrid bg rv" style="margin-top:2px">
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="16" stroke="#4a9eff" stroke-width="1.3"/>
+          <circle cx="22" cy="22" r="10" stroke="#4a9eff" stroke-width=".7" opacity=".35"/>
+          <path d="M22 10 L22 22 L29 22" stroke="#4a9eff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="22" cy="22" r="1.8" fill="#4a9eff"/>
+          <line x1="22" y1="6"  x2="22" y2="8.5"  stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+          <line x1="38" y1="22" x2="35.5" y2="22" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+          <line x1="22" y1="38" x2="22" y2="35.5" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+          <line x1="6"  y1="22" x2="8.5" y2="22"  stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+        </svg>
+      </div>
+      <h4>实时数据同步</h4>
+      <p>毫秒级轮询，物流节点状态变化即时反映，永不滞后。</p>
+    </div>
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <path d="M22 4 L38 10 L38 22 Q38 33 22 40 Q6 33 6 22 L6 10 Z" stroke="#4a9eff" stroke-width="1.3" fill="rgba(74,158,255,.06)"/>
+          <path d="M15 22 L19 26 L29 16" stroke="#4a9eff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 10 L32 14 L32 22 Q32 29 22 33 Q12 29 12 22 L12 14 Z" stroke="#4a9eff" stroke-width=".7" opacity=".3"/>
+        </svg>
+      </div>
+      <h4>准确率保障</h4>
+      <p>服务质量可衡量，查询准确率趋近 100%，偏差自动标注记录。</p>
+    </div>
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <rect x="6"  y="30" width="32" height="6" rx="1.5" stroke="#4a9eff" stroke-width="1.2" fill="rgba(74,158,255,.06)"/>
+          <rect x="9"  y="22" width="26" height="6" rx="1.5" stroke="#4a9eff" stroke-width="1.2" fill="rgba(74,158,255,.06)"/>
+          <rect x="12" y="14" width="20" height="6" rx="1.5" stroke="#4a9eff" stroke-width="1.2" fill="rgba(74,158,255,.08)"/>
+          <rect x="15" y="6"  width="14" height="6" rx="1.5" stroke="#4a9eff" stroke-width="1.2" fill="rgba(74,158,255,.1)"/>
+          <circle cx="22" cy="9"  r="1.2" fill="#4a9eff" opacity=".6"/>
+          <circle cx="22" cy="17" r="1.2" fill="#4a9eff" opacity=".5"/>
+          <circle cx="22" cy="25" r="1.2" fill="#4a9eff" opacity=".4"/>
+          <circle cx="22" cy="33" r="1.2" fill="#4a9eff" opacity=".35"/>
+        </svg>
+      </div>
+      <h4>多平台聚合</h4>
+      <p>顺丰、京东、菜鸟、EMS 等主流物流平台统一接入，一个查询入口搞定所有。</p>
+    </div>
+    <div class="ci">
+      <div class="cico">
+        <svg viewBox="0 0 44 44" fill="none">
+          <path d="M22 4 C16 4 12 9 12 15 L12 24 L8 28 L36 28 L32 24 L32 15 C32 9 28 4 22 4 Z" stroke="#4a9eff" stroke-width="1.3" fill="rgba(74,158,255,.06)"/>
+          <path d="M18 28 Q18 32 22 32 Q26 32 26 28" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="32" cy="8" r="5" fill="rgba(74,158,255,.2)" stroke="#4a9eff" stroke-width="1.1"/>
+          <path d="M32 6 L32 9" stroke="#4a9eff" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="32" cy="10.5" r=".9" fill="#4a9eff"/>
+        </svg>
+      </div>
+      <h4>智能异常预警</h4>
+      <p>延误、丢件、状态停滞等异常秒级触达，支持微信、邮件、Webhook 多渠道推送。</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===================== VALUE ===================== -->
+<section class="val" id="about">
+  <div class="sh rv">
+    <div class="tag">垂直领域 AI Agent</div>
+    <h2 class="hl">为什么是<em>AI Agent</em> 的时代</h2>
+  </div>
+  <div class="vgrid">
+    <div class="vi rv">
+      <div class="vico"><svg viewBox="0 0 40 40" fill="none" width="40" height="40"><circle cx="20" cy="20" r="15" stroke="#c8a96e" stroke-width="1" opacity=".25"/><path d="M20 8 L20 20 L28 20" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="2" fill="#c8a96e"/><line x1="20" y1="5" x2="20" y2="7.5" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round" opacity=".5"/><line x1="35" y1="20" x2="32.5" y2="20" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round" opacity=".5"/><line x1="20" y1="35" x2="20" y2="32.5" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round" opacity=".5"/><line x1="5" y1="20" x2="7.5" y2="20" stroke="#c8a96e" stroke-width="1.2" stroke-linecap="round" opacity=".5"/></svg></div>
+      <div class="vtitle">持续执行，不知疲倦</div>
+      <p class="vdesc">AI Agent 全天候不间断运行，不受班次、情绪、注意力影响。高频重复任务下，执行质量始终如一。</p>
+    </div>
+    <div class="vi rv d1">
+      <div class="vico"><svg viewBox="0 0 40 40" fill="none" width="40" height="40"><path d="M5 28 L11 19 L17 22 L23 13 L29 17 L35 10" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23" cy="13" r="2.5" fill="rgba(200,169,110,.18)" stroke="#c8a96e" stroke-width="1.2"/><path d="M5 34 L35 34" stroke="#c8a96e" stroke-width=".7" opacity=".25"/></svg></div>
+      <div class="vtitle">实时感知，毫秒响应</div>
+      <p class="vdesc">状态变化即时捕获，异常触发即时响应。人工巡检的滞后被彻底消除，决策窗口从小时压缩到秒。</p>
+    </div>
+    <div class="vi rv d2">
+      <div class="vico"><svg viewBox="0 0 40 40" fill="none" width="40" height="40"><rect x="5" y="24" width="7" height="10" rx="1" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.06)"/><rect x="16" y="16" width="7" height="18" rx="1" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.06)"/><rect x="27" y="6" width="7" height="28" rx="1" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.11)"/></svg></div>
+      <div class="vtitle">规模扩展，增量成本趋近于零</div>
+      <p class="vdesc">从处理百笔到百万笔，从调度一台到千台，Agent 的扩展几乎不需要增加人力，用得越多越划算。</p>
+    </div>
+    <div class="vi rv d3">
+      <div class="vico"><svg viewBox="0 0 40 40" fill="none" width="40" height="40"><path d="M20 4 L34 10 L34 22 Q34 32 20 38 Q6 32 6 22 L6 10 Z" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,.05)" opacity=".7"/><path d="M13 20 L17 25 L27 15" stroke="#c8a96e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="vtitle">深度垂直，精准可靠</div>
+      <p class="vdesc">通用大模型解决通用问题，垂直 Agent 深入行业细节。专为场景设计的 Agent，在准确率和可靠性上远超泛化方案。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta" id="contact">
+  <div class="cta-orb"></div>
+  <div class="rv">
+    <div class="tag center" style="margin-bottom:28px">开始合作</div>
+    <h2 class="hl" style="max-width:540px;margin:0 auto 18px">准备好让 AI Agent<br>为你<em>持续工作</em>了吗？</h2>
+    <p class="cta-sub">无论您是无人机运营商，还是物流企业，我们期待与您深度沟通。</p>
+    <div class="cta-bts">
+      <a href="/cdn-cgi/l/email-protection#a0c8c5cccccfe0cdcfd3c9d4c5c3c88ec1c9" class="btn-gh">发送邮件 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="fa">
+    <a href="#" class="logo">墨<em>悉</em>科技</a>
+    <p>Melsy Technology — 用 AI Agent 重新定义实体世界的运营方式。专注于无人机智能化与物流追踪自动化。</p>
+  </div>
+  <div class="fc">
+    <h5>产品</h5>
+    <ul>
+      <li><a href="#arc">ARC 无人机系统</a></li>
+      <li><a href="#log">运单 AI Agent</a></li>
+      <li><a href="#arc">智能摄像头</a></li>
+    </ul>
+  </div>
+  <div class="fc">
+    <h5>公司</h5>
+    <ul>
+      <li><a href="#about">关于我们</a></li>
+      <li><a href="#">加入我们</a></li>
+      <li><a href="#">媒体资料</a></li>
+    </ul>
+  </div>
+  <div class="fc">
+    <h5>联系</h5>
+    <ul>
+      <li><a href="#">商务合作</a></li>
+      <li><a href="#">技术支持</a></li>
+    </ul>
+  </div>
+  <div class="fbot" style="grid-column:1/-1">
+    <p>© 2025 墨悉科技 Melsy Technology. All rights reserved.</p>
+    <p>AI Agent × 实体世界</p>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function toggleMenu(){
+  const m=document.getElementById('mm');
+  m.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})},{threshold:.07});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{
+  const n=document.getElementById('nav');
+  n.classList.toggle('scrolled',window.scrollY>60);
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>
