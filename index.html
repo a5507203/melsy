@@ -29,7 +29,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 nav.scrolled{padding:14px 60px;background:rgba(9,9,16,.88);border-bottom-color:rgba(200,169,110,.12);box-shadow:0 4px 30px rgba(0,0,0,.25)}
 .logo{font-family:'Noto Serif SC',serif;font-size:21px;font-weight:600;letter-spacing:.06em;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:14px}
 .logo em{font-style:normal;color:var(--gold)}
+.logo img{height:30px;width:auto;display:block}
 .logo::after{content:'';display:block;width:28px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.45}
+.fa .logo img{height:26px}
 .nav-links{list-style:none;display:flex;gap:12px;align-items:center}
 .nav-links li{display:flex;align-items:center}
 .nav-links li:not(:last-child)::after{content:'·';color:var(--gold);opacity:.5;font-size:10px;margin-left:12px}
@@ -223,7 +225,7 @@ footer{background:rgba(0,0,0,.5);border-top:1px solid var(--lg);padding:64px 60p
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="logo">墨<em>悉</em>科技</a>
+  <a href="#" class="logo"><img src="logo.png" alt="Melsy">墨<em>悉</em>科技</a>
   <ul class="nav-links">
     <li><a href="#arc">ARC 系统</a></li>
     <li><a href="#log">运单 Agent</a></li>
@@ -691,7 +693,7 @@ footer{background:rgba(0,0,0,.5);border-top:1px solid var(--lg);padding:64px 60p
 <!-- ===================== FOOTER ===================== -->
 <footer>
   <div class="fa">
-    <a href="#" class="logo">墨<em>悉</em>科技</a>
+    <a href="#" class="logo"><img src="logo.png" alt="Melsy">墨<em>悉</em>科技</a>
     <p>Melsy Technology — 用 AI Agent 重新定义实体世界的运营方式。</p>
   </div>
   <div class="fc">
