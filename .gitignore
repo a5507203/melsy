@@ -1,0 +1,8 @@
+.DS_Store
+**/.DS_Store
+Thumbs.db
+desktop.ini
+
+.playwright-mcp/
+melsy-home-*.png
+melsy-system-check.png
