@@ -59,7 +59,11 @@ const requiredSnippets = [
   '低空安全',
   '低空经济',
   '具身空间智能',
-  '人才梯队',
+  'COS 空间大脑',
+  '碎蜂 低空安防系统',
+  'HUGE-Bench',
+  'Surprise3D',
+  'OpenInsGaussian',
 ];
 
 for (const snippet of requiredSnippets) {

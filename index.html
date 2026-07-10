@@ -312,6 +312,7 @@ a {
 
 .section {
   padding: 96px 48px;
+  scroll-margin-top: 80px;
 }
 
 .section.dark {
@@ -578,70 +579,122 @@ a {
   color: rgba(255, 255, 255, 0.78);
 }
 
-.solution-layout {
+.solution-stack {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 28px;
-}
-
-.solution-feature {
-  padding: 34px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 14px 44px rgba(7, 75, 135, 0.08);
-}
-
-.solution-feature h3 {
-  margin: 0 0 12px;
-  font-size: 32px;
-}
-
-.solution-feature p {
-  margin: 0 0 24px;
-  color: var(--muted);
-}
-
-.solution-feature img {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: contain;
-  background: #eef3f8;
-  border-radius: 8px;
-}
-
-.solution-list {
-  display: grid;
-  gap: 16px;
-}
-
-.solution-item {
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
   gap: 22px;
-  padding: 22px;
+}
+
+.solution-module {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  min-height: 360px;
+  overflow: hidden;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(7, 75, 135, 0.08);
 }
 
-.solution-item img,
-.solution-item video {
-  width: 120px;
-  height: 92px;
+.solution-media {
+  display: grid;
+  min-height: 320px;
+  background: #edf2f7;
+}
+
+.solution-media img,
+.solution-media video {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
   object-fit: cover;
-  border-radius: 8px;
-  background: #e7edf4;
 }
 
-.solution-item h3 {
-  margin: 0 0 6px;
-  font-size: 22px;
+.solution-media.is-contained img {
+  padding: 30px;
+  object-fit: contain;
 }
 
-.solution-item p {
+.solution-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 42px;
+}
+
+.solution-role {
+  margin: 0 0 14px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.solution-content h3 {
   margin: 0;
+  font-size: 34px;
+  line-height: 1.18;
+}
+
+.solution-lead {
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.solution-content > p:not(.solution-role):not(.solution-lead) {
+  margin: 14px 0 0;
   color: var(--muted);
+}
+
+.solution-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 26px 0 0;
+}
+
+.solution-spec {
+  padding: 14px 12px;
+  background: #f5f7fa;
+  border-top: 2px solid var(--red);
+}
+
+.solution-spec strong {
+  display: block;
+  color: var(--ink);
+  font-size: 30px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.solution-spec span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.solution-facts {
+  display: grid;
+  gap: 10px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.solution-facts li {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 14px;
+  color: var(--muted);
+}
+
+.solution-facts strong {
+  color: var(--ink);
 }
 
 .company-layout {
@@ -710,69 +763,155 @@ a {
 
 .research-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 0.35fr) minmax(0, 0.65fr);
   gap: 28px;
+  height: 620px;
+  align-items: stretch;
 }
 
 .research-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
   padding: 30px;
   background: var(--white);
-  border: 1px solid var(--line);
+  border: 1px solid #e8e8ed;
   border-radius: 8px;
 }
 
 .research-panel h3 {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
+  color: #1d1d1f;
   font-size: 26px;
+  line-height: 1.2;
 }
 
 .logo-wall {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-content: start;
 }
 
 .logo-wall img {
   width: 100%;
-  height: 70px;
+  height: 74px;
   object-fit: contain;
-  padding: 10px;
-  background: #f0f4f8;
-  border: 1px solid rgba(7, 75, 135, 0.08);
+  padding: 13px;
+  filter: grayscale(1);
+  opacity: 0.72;
+  background: #f5f7fa;
+  border: 1px solid #e8e8ed;
   border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-.paper-list {
+.logo-wall img:hover {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: translateY(-2px);
+  background: var(--white);
+  box-shadow: 0 12px 30px rgba(5, 17, 28, 0.08);
+}
+
+.paper-feed {
   display: grid;
-  gap: 14px;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(7, 75, 135, 0.18) transparent;
 }
 
-.paper-list img {
-  width: 100%;
-  max-height: 170px;
-  object-fit: contain;
-  background: #f0f4f8;
+.paper-feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.paper-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.paper-feed::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.paper-feed:hover::-webkit-scrollbar-thumb {
+  background: rgba(7, 75, 135, 0.18);
+}
+
+.paper-card {
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e8e8ed;
   border-radius: 8px;
 }
 
-.people {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.paper-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  color: #4f5965;
+  background: #f5f7fa;
+  border: 1px solid #e8e8ed;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.paper-tag.is-highlight {
+  color: var(--blue);
+  background: rgba(7, 75, 135, 0.08);
+  border-color: rgba(7, 75, 135, 0.18);
+}
+
+.paper-card h4 {
+  margin: 14px 0 8px;
+  color: #1d1d1f;
+  font-size: 21px;
+  line-height: 1.34;
+  overflow-wrap: anywhere;
+  transition: color 0.2s ease;
+}
+
+.paper-card:hover h4 {
+  color: var(--blue);
+}
+
+.paper-meta {
+  margin: 0;
+  color: #86868b;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.paper-highlight {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  color: var(--ink-soft);
+  background: #f5f7fa;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+}
+
+.paper-links {
+  display: flex;
+  flex-wrap: wrap;
   gap: 14px;
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
-.person img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border-radius: 8px;
-  background: #e7edf4;
+.paper-links a {
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
 }
 
-.person strong {
-  display: block;
-  margin-top: 8px;
+.paper-links a:hover {
+  text-decoration: underline;
 }
 
 .contact-band {
@@ -878,10 +1017,22 @@ a {
 
   .section-head,
   .recent-grid,
-  .solution-layout,
   .company-layout,
   .research-grid {
     grid-template-columns: 1fr;
+  }
+
+  .solution-module {
+    grid-template-columns: 1fr;
+  }
+
+  .research-grid {
+    height: auto;
+  }
+
+  .paper-feed {
+    overflow: visible;
+    padding-right: 0;
   }
 
   .system-map,
@@ -938,20 +1089,24 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .recent-images,
-  .people {
+  .recent-images {
     grid-template-columns: 1fr;
   }
 
-  .solution-item {
+  .solution-content,
+  .research-panel {
+    padding: 24px;
+  }
+
+  .solution-specs,
+  .solution-facts li {
     grid-template-columns: 1fr;
   }
 
-  .solution-item img,
-  .solution-item video {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
+  .solution-media,
+  .solution-media img,
+  .solution-media video {
+    min-height: 240px;
   }
 
   .logo-wall {
@@ -1063,7 +1218,7 @@ a {
           </div>
         </article>
         <article class="system-card reveal">
-          <video src="墨悉官网/Section3/cos/6月26日(1).mp4" muted loop autoplay playsinline preload="metadata"></video>
+          <video src="墨悉官网/Section3/cos/6月26日(1).mp4" poster="墨悉官网/Section3/cos/cos-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
           <div class="system-card-body">
             <h3>COS 系统</h3>
             <p>连接世界模型与多智能体执行，基于空间理解、目标预测和策略训练结果，将真实任务转化为任务链、动作链和多体调度方案。</p>
@@ -1138,39 +1293,62 @@ a {
       <div class="section-head reveal">
         <div>
           <p class="section-kicker">产品与方案</p>
-          <h2 class="section-title">软硬件联合交付，而不是孤立组件</h2>
+          <h2 class="section-title">训练、调度、执行三类产品并行交付</h2>
         </div>
-        <p class="section-copy">产品线围绕“训练、调度、执行”三段闭环展开，既支持单点验证，也支持面向场景的组合交付。</p>
+        <p class="section-copy">三条产品线对应空间智能落地的关键环节：在数字空间中训练策略，由 COS 转化为协同任务，最终通过碎蜂等硬件系统完成真实处置。</p>
       </div>
-      <div class="solution-layout">
-        <article class="solution-feature reveal">
-          <h3>碎蜂</h3>
-          <p>低成本、快速部署、高速拦截的低空安防系统，包含高速自主拦截机与便携式发射枪。</p>
-          <img src="墨悉官网/产品与方案/碎蜂/产品图/1d0d3ed82d5d2dabb43e24a9c5e85e2d.png" alt="碎蜂高速自主拦截系统产品渲染图">
+      <div class="solution-stack">
+        <article class="solution-module reveal">
+          <div class="solution-media">
+            <video src="墨悉官网/Section3/cos/6月26日(1).mp4" poster="墨悉官网/Section3/cos/cos-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
+          </div>
+          <div class="solution-content">
+            <p class="solution-role">Schedule / 调度</p>
+            <h3>COS 空间大脑</h3>
+            <p class="solution-lead">多模态感知决策模组与空间协同大脑</p>
+            <p>负责将世界模型生成的决策结果，高效转化为多智能体协同执行方案。</p>
+            <ul class="solution-facts">
+              <li><strong>核心功能</strong><span>多模态融合感知 / 空间协同调度 / 世界模型转化</span></li>
+              <li><strong>应用场景</strong><span>复杂低空协同决策、跨平台多机群调度</span></li>
+            </ul>
+          </div>
         </article>
-        <div class="solution-list">
-          <article class="solution-item reveal">
-            <img src="墨悉官网/产品与方案/碎蜂/产品图/d4459c30a269ef3aa99462795a7787ee.png" alt="碎蜂便携式发射枪">
-            <div>
-              <h3>高速自主拦截</h3>
-              <p>手持款最大飞行速度 217 km/h，雷达款目标 300 km/h，处置精度 CEP 小于 0.5m。</p>
+
+        <article class="solution-module reveal">
+          <div class="solution-media is-contained">
+            <img src="墨悉官网/产品与方案/碎蜂/产品图/1d0d3ed82d5d2dabb43e24a9c5e85e2d.png" alt="碎蜂高速自主拦截系统产品渲染图">
+          </div>
+          <div class="solution-content">
+            <p class="solution-role">Execute / 执行</p>
+            <h3>碎蜂 低空安防系统</h3>
+            <p class="solution-lead">硬件联合交付，低成本、快速部署的高速拦截系统</p>
+            <p>包含高速自主拦截机与便携式发射枪，实现物理层面的精准拦截与安防执行。</p>
+            <div class="solution-specs" aria-label="碎蜂核心指标">
+              <div class="solution-spec"><strong>217 km/h</strong><span>手持款最大飞行速度</span></div>
+              <div class="solution-spec"><strong>300 km/h</strong><span>雷达目标速度</span></div>
+              <div class="solution-spec"><strong>&lt; 0.5 m</strong><span>处置精度 CEP</span></div>
             </div>
-          </article>
-          <article class="solution-item reveal">
-            <video src="墨悉官网/Section3/cos/6月26日(1).mp4" muted loop autoplay playsinline preload="metadata"></video>
-            <div>
-              <h3>COS</h3>
-              <p>多模态感知决策模组与空间协同大脑，负责把世界模型结果转化为多智能体执行方案。</p>
-            </div>
-          </article>
-          <article class="solution-item reveal">
+            <ul class="solution-facts">
+              <li><strong>系统构成</strong><span>高速自主拦截机 / 便携式发射枪</span></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="solution-module reveal">
+          <div class="solution-media">
             <video src="墨悉官网/产品与方案/空间训练场/微信视频2026-06-30_151900_129.mp4" muted loop autoplay playsinline preload="metadata"></video>
-            <div>
-              <h3>空间训练场</h3>
-              <p>多场景仿真、高并发推演、智能协同，在数字空间中降低试错成本并提升策略迭代效率。</p>
-            </div>
-          </article>
-        </div>
+          </div>
+          <div class="solution-content">
+            <p class="solution-role">Train / 训练</p>
+            <h3>空间训练场</h3>
+            <p class="solution-lead">多场景仿真与高并发推演平台</p>
+            <p>在数字空间中进行全数字化推演与智能协同，降低实体试错成本，提升策略迭代效率。</p>
+            <ul class="solution-facts">
+              <li><strong>核心优势</strong><span>高并发仿真推演 / 多场景高保真还原 / 策略闭环训练</span></li>
+              <li><strong>核心效益</strong><span>极低试错成本 / 策略迭代效率倍增</span></li>
+            </ul>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -1216,7 +1394,7 @@ a {
           <p class="section-kicker">研究与技术</p>
           <h2 class="section-title">全球科研网络与产业合作共同构成技术底座</h2>
         </div>
-        <p class="section-copy">墨悉持续培养 AI 天才少年，连接全球科研网络，并与高校、大厂、具身智能企业共同推进空间智能落地。</p>
+        <p class="section-copy">墨悉围绕低空世界模型、空间理解和 3D 场景感知沉淀科研成果，并与产业伙伴共同推进空间智能落地。</p>
       </div>
       <div class="research-grid">
         <article class="research-panel reveal">
@@ -1236,31 +1414,40 @@ a {
         </article>
         <article class="research-panel reveal">
           <h3>论文与专利</h3>
-          <div class="paper-list">
-            <img src="墨悉官网/研究与技术/论文_专利/ECCV论文.PNG" alt="ECCV 论文与专利信息">
-            <img src="墨悉官网/研究与技术/论文_专利/图片32.png" alt="Surround3D 论文截图">
-            <img src="墨悉官网/研究与技术/论文_专利/图片33.png" alt="OpenInsGaussian 论文截图">
+          <div class="paper-feed" aria-label="论文与专利成果列表">
+            <article class="paper-card">
+              <span class="paper-tag is-highlight">ECCV 2026 录用</span>
+              <h4>HUGE-Bench: A Benchmark for High-Level UAV Vision-Language-Action Tasks</h4>
+              <p class="paper-meta">Jingyu Guo, Ziye Chen, Ziwen Li, Zhengqing Gao, Jiaxin Huang, Hanlue Zhang, Fengming Huang, Yu Yao, Tongliang Liu, Mingming Gong</p>
+              <p class="paper-highlight">面向真实低空任务重新定义无人机 VLA 评测，覆盖 4 个真实数字孪生场景、8 类高层任务与 2.56M 米轨迹，并加入碰撞感知评估。</p>
+              <div class="paper-links">
+                <a href="https://arxiv.org/abs/2603.19822" target="_blank" rel="noopener">arXiv ↗</a>
+              </div>
+            </article>
+            <article class="paper-card">
+              <span class="paper-tag">3D 空间推理数据集</span>
+              <h4>Surprise3D: A Dataset for Spatial Understanding and Reasoning in Complex 3D Scenes</h4>
+              <p class="paper-meta">Jiaxin Huang, Ziwen Li, Hanlue Zhang, Runnan Chen, Zhengqing Gao, Xiao He, Yandong Guo, Wenping Wang, Tongliang Liu, Mingming Gong</p>
+              <p class="paper-highlight">构建无物体名称捷径的空间查询，让模型必须真正理解相对位置、视角关系和距离推理，而不是依赖语义词提示。</p>
+              <div class="paper-links">
+                <a href="https://openreview.net/forum?id=JaOcuRbglz" target="_blank" rel="noopener">OpenReview ↗</a>
+                <a href="https://arxiv.org/abs/2507.07781" target="_blank" rel="noopener">arXiv ↗</a>
+                <a href="https://github.com/liziwennba/SUPRISE" target="_blank" rel="noopener">Code ↗</a>
+              </div>
+            </article>
+            <article class="paper-card">
+              <span class="paper-tag">ICCV 2025 Workshop</span>
+              <h4>OpenInsGaussian: Open-vocabulary Instance Gaussian Segmentation with Context-aware Cross-view Fusion</h4>
+              <p class="paper-meta">Tianyu Huang, Runnan Chen, Dongting Hu, Fengming Huang, Mingming Gong, Tongliang Liu</p>
+              <p class="paper-highlight">通过上下文感知特征抽取与跨视角融合，提升 3D Gaussian 场景中的开放词汇实例分割一致性与细节完整度。</p>
+              <div class="paper-links">
+                <a href="https://arxiv.org/abs/2510.18253" target="_blank" rel="noopener">arXiv ↗</a>
+                <a href="https://openaccess.thecvf.com/content/ICCV2025W/Findings/papers/Huang_OpenInsGaussian_Open-vocabulary_Instance_Gaussian_Segmentation_with_Context-aware_Cross-view_Fusion_ICCVW_2025_paper.pdf" target="_blank" rel="noopener">Paper ↗</a>
+              </div>
+            </article>
           </div>
         </article>
       </div>
-      <article class="research-panel reveal" style="margin-top:28px">
-        <h3>人才梯队</h3>
-        <p class="section-copy">60+ 博士研究员，技术方向全面覆盖机器学习、世界模型、多模态、空间智能。团队背景覆盖高校任职、头部大厂与 AI 创业：中科大、哈工大、山大、武大、南航等高校博导/正教授背景，Google、阿里、腾讯、智元等算法科学家或技术带头人背景，以及墨悉、航链等 AI 创业项目经验。</p>
-        <div class="people">
-          <div class="person">
-            <img src="墨悉官网/研究与技术/人才梯队/创始人/刘同亮.jpg" alt="刘同亮教授">
-            <strong>刘同亮</strong>
-          </div>
-          <div class="person">
-            <img src="墨悉官网/研究与技术/人才梯队/团队形象照/姚禹.png" alt="团队成员姚禹">
-            <strong>姚禹</strong>
-          </div>
-          <div class="person">
-            <img src="墨悉官网/研究与技术/人才梯队/团队形象照/陈紫业.png" alt="团队成员陈紫业">
-            <strong>陈紫业</strong>
-          </div>
-        </div>
-      </article>
     </div>
   </section>
 
