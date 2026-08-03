@@ -1,1510 +1,349 @@
-<!DOCTYPE html>
+<!--
+THESIS: 以“协同世界模型”为唯一叙事主轴，把墨悉从科研理念带到可验证的产业闭环。
+OWN-WORLD: 延续用户确认的深色粒子技术世界；蓝色表达系统状态，红色表达关键决策与行动。
+STORY: 愿景 → 范式演进 → 建模机制 → 训练/协同/执行 → 场景 → 合作 → 公司与研究 → 联系。
+FIRST VIEWPORT: 首屏只回答“墨悉做什么、为什么重要、下一步去哪”，并提供商务合作与产品演示双入口。
+FORM: 中文优先、技术编辑感、宽屏非对称构图；不引入模板化卡片墙，不虚构数据和合作背书。
+-->
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>墨悉科技 | 感知空间 协同智能</title>
-<meta name="description" content="墨悉科技，面向物理AI的具身空间智能公司，构建低空世界模型、COS空间协同系统与碎蜂高速自主拦截系统。">
-<link rel="icon" href="logo.png">
-<style>
-:root {
-  --blue: #074B87;
-  --red: #B71B2D;
-  --ink: #07121c;
-  --ink-soft: #102234;
-  --paper: #f6f8fb;
-  --white: #ffffff;
-  --muted: #6d7b8c;
-  --line: rgba(7, 75, 135, 0.16);
-  --line-dark: rgba(255, 255, 255, 0.16);
-  --shadow: 0 24px 70px rgba(5, 17, 28, 0.22);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: "Alibaba PuHuiTi", "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
-  letter-spacing: 0;
-  overflow-x: hidden;
-}
-
-img,
-video {
-  max-width: 100%;
-  display: block;
-}
-
-a {
-  color: inherit;
-}
-
-.site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 76px;
-  padding: 0 48px;
-  color: var(--white);
-  background: rgba(7, 18, 28, 0.42);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background 180ms ease, height 180ms ease, border-color 180ms ease;
-}
-
-.site-header.is-scrolled {
-  height: 64px;
-  background: rgba(7, 18, 28, 0.92);
-  border-bottom-color: rgba(255, 255, 255, 0.18);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.brand img {
-  width: 104px;
-  height: auto;
-}
-
-.brand span {
-  font-size: 16px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  font-size: 14px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  opacity: 0.84;
-  transition: opacity 160ms ease, color 160ms ease;
-}
-
-.nav-links a:hover,
-.nav-links a:focus-visible {
-  opacity: 1;
-  color: #d8eafa;
-}
-
-.lang-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.lang-switch strong {
-  color: var(--white);
-}
-
-.lang-switch span {
-  color: rgba(255, 255, 255, 0.52);
-}
-
-.menu-button {
-  display: none;
-  width: 42px;
-  height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--white);
-  cursor: pointer;
-}
-
-.menu-button span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  margin: 4px auto;
-  background: currentColor;
-}
-
-.mobile-nav {
-  position: fixed;
-  inset: 76px 16px auto 16px;
-  z-index: 99;
-  display: none;
-  padding: 18px;
-  background: rgba(7, 18, 28, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-}
-
-.mobile-nav.is-open {
-  display: grid;
-  gap: 12px;
-}
-
-.mobile-nav a {
-  color: var(--white);
-  text-decoration: none;
-  padding: 10px 0;
-}
-
-.hero {
-  position: relative;
-  min-height: 92svh;
-  display: grid;
-  align-items: end;
-  overflow: hidden;
-  color: var(--white);
-  background: var(--ink);
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 18, 28, 0.86), rgba(7, 18, 28, 0.38) 55%, rgba(7, 18, 28, 0.74)),
-    url("墨悉官网/Hero Banner愿景宣言与信仰/背景图.png") center / cover no-repeat;
-  transform: scale(1.02);
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 96px 96px;
-  opacity: 0.28;
-  pointer-events: none;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-  width: min(1180px, calc(100% - 48px));
-  margin: 0 auto;
-  padding: 140px 0 88px;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 22px;
-  color: #cfe5f8;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.eyebrow::before {
-  content: "";
-  width: 42px;
-  height: 2px;
-  background: var(--red);
-}
-
-.hero h1 {
-  max-width: 920px;
-  margin: 0;
-  font-size: 76px;
-  line-height: 1.05;
-  font-weight: 800;
-}
-
-.hero h1 span {
-  color: #e7f3ff;
-}
-
-.hero-subtitle {
-  max-width: 640px;
-  margin: 28px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 20px;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 42px;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 22px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  text-decoration: none;
-  font-weight: 700;
-  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
-}
-
-.button:hover,
-.button:focus-visible {
-  transform: translateY(-2px);
-}
-
-.button-primary {
-  background: var(--red);
-  color: var(--white);
-}
-
-.button-secondary {
-  color: var(--white);
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.hero-proof {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  max-width: 840px;
-  margin-top: 64px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.proof-item {
-  padding: 20px;
-  background: rgba(7, 18, 28, 0.48);
-}
-
-.proof-item strong {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 22px;
-}
-
-.proof-item span {
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 13px;
-}
-
-.section {
-  padding: 96px 48px;
-  scroll-margin-top: 80px;
-}
-
-.section.dark {
-  color: var(--white);
-  background: var(--ink);
-}
-
-.section.blueprint {
-  background:
-    linear-gradient(180deg, rgba(7, 75, 135, 0.06), rgba(183, 27, 45, 0.05)),
-    var(--paper);
-}
-
-.container {
-  width: min(1180px, 100%);
-  margin: 0 auto;
-}
-
-.section-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 420px);
-  gap: 48px;
-  align-items: end;
-  margin-bottom: 42px;
-}
-
-.section-kicker {
-  margin: 0 0 12px;
-  color: var(--red);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.dark .section-kicker {
-  color: #ff9ba9;
-}
-
-.section-title {
-  margin: 0;
-  font-size: 42px;
-  line-height: 1.18;
-  font-weight: 800;
-}
-
-.section-copy {
-  margin: 0;
-  color: var(--muted);
-}
-
-.dark .section-copy {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.recent-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: 28px;
-  align-items: stretch;
-}
-
-.recent-main {
-  display: grid;
-  gap: 24px;
-  padding: 34px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 14px 44px rgba(7, 75, 135, 0.08);
-}
-
-.recent-main h3 {
-  margin: 0;
-  font-size: 28px;
-  line-height: 1.25;
-}
-
-.recent-main p {
-  margin: 0;
-  color: var(--muted);
-}
-
-.recent-images {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.recent-images img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.timeline {
-  display: grid;
-  gap: 12px;
-}
-
-.timeline-item {
-  padding: 20px;
-  background: rgba(7, 75, 135, 0.06);
-  border-left: 3px solid var(--blue);
-  border-radius: 8px;
-}
-
-.timeline-item strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.timeline-item span {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.system-map {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.system-card {
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line-dark);
-  border-radius: 8px;
-}
-
-.system-card video,
-.system-card img {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  background: #000;
-}
-
-.system-card-body {
-  padding: 24px;
-}
-
-.system-card h3 {
-  margin: 0 0 12px;
-  font-size: 24px;
-}
-
-.system-card p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.system-card ul {
-  display: grid;
-  gap: 8px;
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-}
-
-.system-card li {
-  display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  gap: 8px;
-}
-
-.system-card li::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  margin-top: 8px;
-  border-radius: 50%;
-  background: var(--red);
-}
-
-.flow-band {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 28px;
-  margin-top: 34px;
-  padding: 28px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line-dark);
-  border-radius: 8px;
-}
-
-.flow-band h3 {
-  margin: 0;
-  font-size: 28px;
-}
-
-.flow-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line-dark);
-}
-
-.flow-step {
-  padding: 18px;
-  background: #0b1b2a;
-}
-
-.flow-step strong {
-  display: block;
-  margin-bottom: 6px;
-  color: #d8eafa;
-}
-
-.flow-step span {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 14px;
-}
-
-.scenario-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.scenario-card {
-  position: relative;
-  min-height: 420px;
-  overflow: hidden;
-  border-radius: 8px;
-  background: var(--ink);
-  color: var(--white);
-  box-shadow: var(--shadow);
-}
-
-.scenario-card img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.78;
-}
-
-.scenario-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(7, 18, 28, 0.2), rgba(7, 18, 28, 0.92));
-}
-
-.scenario-content {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  padding: 28px;
-}
-
-.scenario-content h3 {
-  margin: 0 0 10px;
-  font-size: 26px;
-}
-
-.scenario-content p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.solution-stack {
-  display: grid;
-  gap: 22px;
-}
-
-.solution-module {
-  display: grid;
-  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
-  min-height: 360px;
-  overflow: hidden;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 16px 48px rgba(7, 75, 135, 0.08);
-}
-
-.solution-media {
-  display: grid;
-  min-height: 320px;
-  background: #edf2f7;
-}
-
-.solution-media img,
-.solution-media video {
-  width: 100%;
-  height: 100%;
-  min-height: 320px;
-  object-fit: cover;
-}
-
-.solution-media.is-contained img {
-  padding: 30px;
-  object-fit: contain;
-}
-
-.solution-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 42px;
-}
-
-.solution-role {
-  margin: 0 0 14px;
-  color: var(--red);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.solution-content h3 {
-  margin: 0;
-  font-size: 34px;
-  line-height: 1.18;
-}
-
-.solution-lead {
-  margin: 14px 0 0;
-  color: var(--ink-soft);
-  font-size: 21px;
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.solution-content > p:not(.solution-role):not(.solution-lead) {
-  margin: 14px 0 0;
-  color: var(--muted);
-}
-
-.solution-specs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 26px 0 0;
-}
-
-.solution-spec {
-  padding: 14px 12px;
-  background: #f5f7fa;
-  border-top: 2px solid var(--red);
-}
-
-.solution-spec strong {
-  display: block;
-  color: var(--ink);
-  font-size: 30px;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.solution-spec span {
-  display: block;
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.solution-facts {
-  display: grid;
-  gap: 10px;
-  margin: 26px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.solution-facts li {
-  display: grid;
-  grid-template-columns: 90px minmax(0, 1fr);
-  gap: 14px;
-  color: var(--muted);
-}
-
-.solution-facts strong {
-  color: var(--ink);
-}
-
-.company-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  align-items: center;
-}
-
-.company-image img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-}
-
-.company-copy {
-  display: grid;
-  gap: 22px;
-}
-
-.company-copy h2 {
-  margin: 0;
-  font-size: 42px;
-  line-height: 1.18;
-}
-
-.company-copy p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 42px;
-}
-
-.news-item {
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line-dark);
-  border-radius: 8px;
-}
-
-.news-item img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.news-item div {
-  padding: 16px;
-}
-
-.news-item strong {
-  display: block;
-}
-
-.news-item span {
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 13px;
-}
-
-.research-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.35fr) minmax(0, 0.65fr);
-  gap: 28px;
-  height: 620px;
-  align-items: stretch;
-}
-
-.research-panel {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  padding: 30px;
-  background: var(--white);
-  border: 1px solid #e8e8ed;
-  border-radius: 8px;
-}
-
-.research-panel h3 {
-  margin: 0 0 20px;
-  color: #1d1d1f;
-  font-size: 26px;
-  line-height: 1.2;
-}
-
-.logo-wall {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-content: start;
-}
-
-.logo-wall img {
-  width: 100%;
-  height: 74px;
-  object-fit: contain;
-  padding: 13px;
-  filter: grayscale(1);
-  opacity: 0.72;
-  background: #f5f7fa;
-  border: 1px solid #e8e8ed;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.logo-wall img:hover {
-  filter: grayscale(0);
-  opacity: 1;
-  transform: translateY(-2px);
-  background: var(--white);
-  box-shadow: 0 12px 30px rgba(5, 17, 28, 0.08);
-}
-
-.paper-feed {
-  display: grid;
-  gap: 16px;
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(7, 75, 135, 0.18) transparent;
-}
-
-.paper-feed::-webkit-scrollbar {
-  width: 6px;
-}
-
-.paper-feed::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.paper-feed::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 999px;
-}
-
-.paper-feed:hover::-webkit-scrollbar-thumb {
-  background: rgba(7, 75, 135, 0.18);
-}
-
-.paper-card {
-  padding: 22px;
-  background: #ffffff;
-  border: 1px solid #e8e8ed;
-  border-radius: 8px;
-}
-
-.paper-tag {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 3px 9px;
-  color: #4f5965;
-  background: #f5f7fa;
-  border: 1px solid #e8e8ed;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.paper-tag.is-highlight {
-  color: var(--blue);
-  background: rgba(7, 75, 135, 0.08);
-  border-color: rgba(7, 75, 135, 0.18);
-}
-
-.paper-card h4 {
-  margin: 14px 0 8px;
-  color: #1d1d1f;
-  font-size: 21px;
-  line-height: 1.34;
-  overflow-wrap: anywhere;
-  transition: color 0.2s ease;
-}
-
-.paper-card:hover h4 {
-  color: var(--blue);
-}
-
-.paper-meta {
-  margin: 0;
-  color: #86868b;
-  font-size: 14px;
-  line-height: 1.55;
-}
-
-.paper-highlight {
-  margin: 16px 0 0;
-  padding: 14px 16px;
-  color: var(--ink-soft);
-  background: #f5f7fa;
-  border-left: 3px solid var(--blue);
-  border-radius: 0 8px 8px 0;
-}
-
-.paper-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.paper-links a {
-  color: var(--blue);
-  font-size: 14px;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.paper-links a:hover {
-  text-decoration: underline;
-}
-
-.contact-band {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 34px;
-  align-items: center;
-  padding: 42px;
-  color: var(--white);
-  background: linear-gradient(135deg, var(--blue), #0f2a45 62%, var(--red));
-  border-radius: 8px;
-}
-
-.contact-band h2 {
-  margin: 0 0 12px;
-  font-size: 38px;
-  line-height: 1.2;
-}
-
-.contact-band p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.contact-band img {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border: 8px solid rgba(255, 255, 255, 0.92);
-  border-radius: 8px;
-}
-
-.site-footer {
-  padding: 42px 48px;
-  color: rgba(255, 255, 255, 0.7);
-  background: #06101a;
-}
-
-.footer-inner {
-  width: min(1180px, 100%);
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  align-items: center;
-}
-
-.footer-inner strong {
-  color: var(--white);
-}
-
-.reveal {
-  opacity: 1;
-  transform: none;
-  transition: opacity 520ms ease, transform 520ms ease;
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-:focus-visible {
-  outline: 3px solid #8ac4ff;
-  outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (max-width: 1100px) {
-  .site-header {
-    padding: 0 28px;
-  }
-
-  .nav-links {
-    gap: 16px;
-  }
-
-  .hero h1 {
-    font-size: 58px;
-  }
-
-  .section {
-    padding: 76px 28px;
-  }
-
-  .section-head,
-  .recent-grid,
-  .company-layout,
-  .research-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .solution-module {
-    grid-template-columns: 1fr;
-  }
-
-  .research-grid {
-    height: auto;
-  }
-
-  .paper-feed {
-    overflow: visible;
-    padding-right: 0;
-  }
-
-  .system-map,
-  .scenario-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .scenario-card {
-    min-height: 340px;
-  }
-}
-
-@media (max-width: 820px) {
-  .site-header {
-    height: 68px;
-    padding: 0 18px;
-  }
-
-  .brand img {
-    width: 92px;
-  }
-
-  .brand span,
-  .nav-links {
-    display: none;
-  }
-
-  .menu-button {
-    display: block;
-  }
-
-  .hero-content {
-    width: min(100% - 36px, 1180px);
-    padding: 112px 0 56px;
-  }
-
-  .hero {
-    min-height: 88svh;
-  }
-
-  .hero h1 {
-    font-size: 44px;
-  }
-
-  .hero-subtitle {
-    font-size: 18px;
-  }
-
-  .hero-proof,
-  .flow-band,
-  .flow-steps,
-  .news-grid,
-  .contact-band {
-    grid-template-columns: 1fr;
-  }
-
-  .recent-images {
-    grid-template-columns: 1fr;
-  }
-
-  .solution-content,
-  .research-panel {
-    padding: 24px;
-  }
-
-  .solution-specs,
-  .solution-facts li {
-    grid-template-columns: 1fr;
-  }
-
-  .solution-media,
-  .solution-media img,
-  .solution-media video {
-    min-height: 240px;
-  }
-
-  .logo-wall {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="墨悉科技构建协同世界模型，让无人机、机器人、机器狗与无人船等智能体在真实约束下共同感知、决策与执行。">
+  <meta name="theme-color" content="#06111a">
+  <title>墨悉科技｜协同世界模型</title>
+  <link rel="icon" href="assets/v2/brand/melsy-logo.png">
+  <link rel="stylesheet" href="styles.css?v=6">
+  <script src="site.js?v=2" defer></script>
 </head>
-<body>
-<header class="site-header" id="siteHeader">
-  <a class="brand" href="#hero" aria-label="墨悉科技首页">
-    <img src="logo.png" alt="Melsy 墨悉科技">
-    <span>墨悉科技</span>
-  </a>
-  <nav class="nav-links" aria-label="主导航">
-    <a href="#recent">近期合作</a>
-    <a href="#system">核心系统</a>
-    <a href="#solutions">产品与方案</a>
-    <a href="#research">研究与技术</a>
-    <a href="#contact">联系</a>
-    <span class="lang-switch" aria-label="语言入口"><strong>中文</strong><span>EN</span></span>
-  </nav>
-  <button class="menu-button" type="button" id="menuButton" aria-label="打开导航" aria-expanded="false" aria-controls="mobileNav">
-    <span></span><span></span><span></span>
-  </button>
-</header>
+<body data-page="home">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
 
-<nav class="mobile-nav" id="mobileNav" aria-label="移动端导航">
-  <a href="#recent">近期合作</a>
-  <a href="#system">核心系统</a>
-  <a href="#solutions">产品与方案</a>
-  <a href="#research">研究与技术</a>
-  <a href="#contact">联系</a>
-</nav>
-
-<main>
-  <section class="hero" id="hero">
-    <div class="hero-content reveal">
-      <p class="eyebrow">Melsy Technology</p>
-      <h1>感知空间 协同智能<br><span>物理AI具身空间智能</span></h1>
-      <p class="hero-subtitle">墨悉科技面向 1000m 以下低空真实任务，连接世界模型、空间协同大脑与高速自主拦截硬件，让多智能体在真实空间中可靠协作。</p>
-      <div class="hero-actions">
-        <a class="button button-primary" href="#system">查看核心系统</a>
-        <a class="button button-secondary" href="#solutions">进入产品与方案</a>
-      </div>
-      <div class="hero-proof" aria-label="核心能力">
-        <div class="proof-item"><strong>低空世界模型</strong><span>空间重建、因果推演、真实迁移</span></div>
-        <div class="proof-item"><strong>COS 协同大脑</strong><span>连接感知决策与多智能体执行</span></div>
-        <div class="proof-item"><strong>碎蜂系统</strong><span>高速自主拦截与蜂群协同验证</span></div>
-      </div>
+  <header class="site-header" data-site-header>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="墨悉科技首页" aria-current="page">
+        <img src="assets/v2/brand/melsy-logo.png" alt="" width="468" height="135">
+        <span>墨悉科技</span>
+      </a>
+      <nav class="desktop-nav" aria-label="主导航">
+        <a href="#theory">核心技术</a>
+        <a href="#products">产品与方案</a>
+        <a href="#applications">应用场景</a>
+        <a href="#partnership">产业合作</a>
+        <a href="about.html">关于墨悉</a>
+        <a href="research.html">研究与技术</a>
+        <a class="nav-cta" href="#contact">商务合作</a>
+      </nav>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-navigation" aria-label="打开导航菜单" data-menu-button>
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </section>
+    <nav class="mobile-panel" id="mobile-navigation" aria-label="移动端导航" data-mobile-panel>
+      <a href="#theory">核心技术</a>
+      <a href="#products">产品与方案</a>
+      <a href="#applications">应用场景</a>
+      <a href="#partnership">产业合作</a>
+      <a href="about.html">关于墨悉</a>
+      <a href="research.html">研究与技术</a>
+      <a class="nav-cta" href="#contact">商务合作</a>
+    </nav>
+  </header>
 
-  <section class="section blueprint" id="recent">
-    <div class="container">
-      <div class="section-head reveal">
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
         <div>
-          <p class="section-kicker">近期合作</p>
-          <h2 class="section-title">从顶尖高校实验室到低空真实任务</h2>
+          <p class="hero-kicker">Melsy Technology · Physical AI</p>
+          <h1 id="hero-title">协同世界模型：<br>具身智能时代的新范式</h1>
+          <p class="hero-lead">墨悉构建协同世界模型，让无人机、机器人、机器狗与无人船等智能体，在真实约束下共同感知、决策与执行。</p>
+          <div class="button-row">
+            <a class="button button-primary" href="#contact">商务合作</a>
+            <a class="button button-secondary" href="#products">观看产品 Demo</a>
+          </div>
+          <p class="hero-value">连接智能体 · 连接真实世界 · 连接未来产业</p>
         </div>
-        <p class="section-copy">墨悉围绕具身空间智能、低空世界模型和多智能体协同，持续推动科研能力转化为可验证的产品与场景。</p>
+        <div class="model-field" aria-label="协同世界模型从感知到决策再到执行的闭环示意">
+          <div class="field-orbit" aria-hidden="true"></div>
+          <div class="signal-trace" aria-hidden="true"></div>
+          <div class="field-node is-world">
+            <strong>世界状态</strong>
+            <span>What &amp; Where</span>
+          </div>
+          <div class="field-node is-decision">
+            <strong>协同决策</strong>
+            <span>How</span>
+          </div>
+          <div class="field-node is-action">
+            <strong>真实执行</strong>
+            <span>Act</span>
+          </div>
+        </div>
       </div>
-      <div class="recent-grid">
-        <article class="recent-main reveal">
+    </section>
+
+    <section class="section theme-paper" id="theory" aria-labelledby="theory-title">
+      <div class="container">
+        <div class="section-intro">
           <div>
-            <h3>中标北京航空航天大学自动化科学与电气工程学院仿真大模型项目</h3>
-            <p>面向低空人工智能实验室建设，推进仿真大模型、空间训练场与真实任务验证的联动。</p>
+            <span class="section-label">Collaborative World Model</span>
+            <h2 class="display-title" id="theory-title">让 AI 从理解世界，迈向协同完成真实任务</h2>
           </div>
-          <div class="recent-images">
-            <img src="墨悉官网/Section2/北航/图片1.jpg" alt="北航合作项目信息截图">
-            <img src="墨悉官网/Section2/北航/图片2.jpg" alt="北航合作项目列表截图">
-          </div>
-        </article>
-        <div class="timeline reveal">
-          <div class="timeline-item"><strong>产品发布</strong><span>2026.01 举办产品发布会，实现技术产品化</span></div>
-          <div class="timeline-item"><strong>校企联动</strong><span>携手北京航空航天大学，共建联合实验室</span></div>
-          <div class="timeline-item"><strong>产业认可</strong><span>获评中国飞谷 2025 年度低空示范企业</span></div>
-          <div class="timeline-item"><strong>行业发声</strong><span>刘同亮教授亮相世界无人机大会，分享前沿技术成果</span></div>
+          <p>真实任务不只需要单体智能，更需要多个智能体在通信、能源、算力、位置与时间等约束下，形成统一认知并协同行动。</p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="section dark" id="system">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <p class="section-kicker">一脑多体软硬一体系统</p>
-          <h2 class="section-title">面向低空真实任务，构建可训练、可调度、可执行的闭环</h2>
+        <div class="paradigm-layout">
+          <div class="paradigm-tabs" role="tablist" aria-label="智能范式演进" data-tab-list data-panel-host="#paradigm-panels">
+            <button class="paradigm-tab" id="tab-single" type="button" role="tab" aria-selected="false" aria-controls="panel-single" tabindex="-1">
+              <b>01</b><strong>单智能体时代</strong>
+            </button>
+            <button class="paradigm-tab" id="tab-multi" type="button" role="tab" aria-selected="false" aria-controls="panel-multi" tabindex="-1">
+              <b>02</b><strong>多智能体时代</strong>
+            </button>
+            <button class="paradigm-tab" id="tab-collaborative" type="button" role="tab" aria-selected="true" aria-controls="panel-collaborative">
+              <b>03</b><strong>协同智能时代</strong>
+            </button>
+          </div>
+          <div class="paradigm-stage" id="paradigm-panels">
+            <article class="paradigm-panel" id="panel-single" role="tabpanel" aria-labelledby="tab-single">
+              <h3>Single-Agent Era</h3>
+              <p>理解环境与单个动作，围绕单一智能体建立感知、判断与行动链路。</p>
+              <p class="limit"><strong>能力边界：</strong>面对多体互动和动态环境时，单体信息与行动能力有限。</p>
+            </article>
+            <article class="paradigm-panel" id="panel-multi" role="tabpanel" aria-labelledby="tab-multi">
+              <h3>Multi-Agent Era</h3>
+              <p>多个智能体并行执行任务，扩展覆盖范围与任务吞吐。</p>
+              <p class="limit"><strong>能力边界：</strong>目标相互独立时，容易出现资源竞争、信息割裂与决策冲突。</p>
+            </article>
+            <article class="paradigm-panel" id="panel-collaborative" role="tabpanel" aria-labelledby="tab-collaborative">
+              <h3>Collaborative Intelligence Era</h3>
+              <p>在统一时空中建立多体协同机制，围绕全局任务动态协调认知、决策与执行。</p>
+              <p class="limit"><strong>关键跃迁：</strong>从“更多智能体”走向“一个可协同演化的任务系统”。</p>
+            </article>
+          </div>
         </div>
-        <p class="section-copy">空间训练场提供低成本高效率的策略迭代，COS 将世界模型结果转化为任务链和动作链，碎蜂完成高速目标处置验证。</p>
-      </div>
-      <div class="system-map">
-        <article class="system-card reveal">
-          <video src="墨悉官网/Section3/空间训练场/微信视频2026-06-30_151900_129.mp4" muted loop autoplay playsinline preload="metadata"></video>
-          <div class="system-card-body">
-            <h3>空间训练场</h3>
-            <p>全球首个低空世界模型，面向 1000m 以下空间场景，通过空间重建、物理真实性、因果真实性和真实迁移提高低空真实任务成功率。</p>
-            <ul>
-              <li>高速目标训练</li>
-              <li>蜂群攻防推演</li>
-              <li>多场景仿真与协同策略迭代</li>
-            </ul>
-          </div>
-        </article>
-        <article class="system-card reveal">
-          <video src="墨悉官网/Section3/cos/6月26日(1).mp4" poster="墨悉官网/Section3/cos/cos-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
-          <div class="system-card-body">
-            <h3>COS 系统</h3>
-            <p>连接世界模型与多智能体执行，基于空间理解、目标预测和策略训练结果，将真实任务转化为任务链、动作链和多体调度方案。</p>
-            <ul>
-              <li>多模态感知决策模组</li>
-              <li>COS 空间协同大脑</li>
-              <li>多智能体协同任务处理</li>
-            </ul>
-          </div>
-        </article>
-        <article class="system-card reveal">
-          <img src="墨悉官网/产品与方案/碎蜂/产品图/601b343537e054536bd21c96c7f42a4e.png" alt="碎蜂高速自主拦截系统组合形态">
-          <div class="system-card-body">
-            <h3>碎蜂高速自主拦截系统</h3>
-            <p>基于空间智能的下一代低空安防解决方案，完成低速目标识别追踪、高速拦截机飞行能力与多机协同策略验证。</p>
-            <ul>
-              <li>70-80km/h 低速目标链路验证</li>
-              <li>约 300km/h 高速拦截机飞行能力实测</li>
-              <li>3 架飞机协同策略验证</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-      <div class="flow-band reveal">
-        <h3>从虚拟训练到真实处置</h3>
-        <div class="flow-steps">
-          <div class="flow-step"><strong>训练</strong><span>在低空世界模型中生成策略与长尾场景。</span></div>
-          <div class="flow-step"><strong>协同</strong><span>COS 调度多智能体，输出可执行任务链。</span></div>
-          <div class="flow-step"><strong>验证</strong><span>碎蜂系统完成真实目标识别、追踪与拦截。</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="section" id="scenarios">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <p class="section-kicker">场景验证</p>
-          <h2 class="section-title">低空安全、低空经济与具身空间智能</h2>
+        <div class="formula-field">
+          <div class="formula-copy">
+            <span class="section-label">State Transition</span>
+            <h3>建模统一时空中的联合状态</h3>
+            <p>协同世界模型描述智能体、环境、资源和任务之间的因果演化，并将全局目标转化为可执行的联合动作。</p>
+            <p class="formula" aria-label="下一时刻状态由当前状态、联合动作、环境与约束共同决定">s(t+1) ~ P(s(t), a(1:n), e, c)</p>
+          </div>
+          <figure class="architecture-image">
+            <img src="assets/v2/theory/architecture.jpg" alt="协同世界模型技术架构图：多智能体动作、协同状态、资源约束和任务编排共同形成任务闭环" loading="lazy" width="1600" height="900">
+          </figure>
         </div>
-        <p class="section-copy">以真实场景约束技术闭环，避免停留在演示系统，让模型、协同和硬件都接受现场任务检验。</p>
-      </div>
-      <div class="scenario-grid">
-        <article class="scenario-card reveal">
-          <img src="墨悉官网/Section4/低空安全/图片38.png" alt="低空安全场景中的无人机目标">
-          <div class="scenario-content">
-            <h3>低空安全</h3>
-            <p>面向千亿级市场入口，覆盖巡检、防御、识别、追踪和处置链路。</p>
-          </div>
-        </article>
-        <article class="scenario-card reveal">
-          <img src="墨悉官网/Section4/低空经济/图片39.png" alt="低空经济电力巡检场景">
-          <div class="scenario-content">
-            <h3>低空经济</h3>
-            <p>面向万亿级市场应用，让无人机在基础设施、物流和城市运营中形成可规模化能力。</p>
-          </div>
-        </article>
-        <article class="scenario-card reveal">
-          <img src="墨悉官网/Section4/具身空间智能/图片43.png" alt="具身空间智能多智能体场景">
-          <div class="scenario-content">
-            <h3>具身空间智能</h3>
-            <p>长期平台机会，赋能无人机、机器人、机器狗、无人船等多智能体。</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <section class="section blueprint" id="solutions">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <p class="section-kicker">产品与方案</p>
-          <h2 class="section-title">训练、调度、执行三类产品并行交付</h2>
+        <div class="mechanisms">
+          <h3>三个机制，让协同成为系统能力</h3>
+          <ol class="mechanism-list">
+            <li>
+              <span class="mechanism-number">MECHANISM 01</span>
+              <h4>资源约束机制</h4>
+              <p>在算力、带宽、能源、位置与时间等边界条件下协调系统决策。</p>
+            </li>
+            <li>
+              <span class="mechanism-number">MECHANISM 02</span>
+              <h4>协同推理机制</h4>
+              <p>融合联合状态、因果关系与意图预测，形成面向全局任务的统一认知。</p>
+            </li>
+            <li>
+              <span class="mechanism-number">MECHANISM 03</span>
+              <h4>奖惩分配机制</h4>
+              <p>评估不同智能体的任务贡献，为策略迭代提供一致的优化依据。</p>
+            </li>
+          </ol>
         </div>
-        <p class="section-copy">三条产品线对应空间智能落地的关键环节：在数字空间中训练策略，由 COS 转化为协同任务，最终通过碎蜂等硬件系统完成真实处置。</p>
-      </div>
-      <div class="solution-stack">
-        <article class="solution-module reveal">
-          <div class="solution-media">
-            <video src="墨悉官网/Section3/cos/6月26日(1).mp4" poster="墨悉官网/Section3/cos/cos-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
-          </div>
-          <div class="solution-content">
-            <p class="solution-role">Schedule / 调度</p>
-            <h3>COS 空间大脑</h3>
-            <p class="solution-lead">多模态感知决策模组与空间协同大脑</p>
-            <p>负责将世界模型生成的决策结果，高效转化为多智能体协同执行方案。</p>
-            <ul class="solution-facts">
-              <li><strong>核心功能</strong><span>多模态融合感知 / 空间协同调度 / 世界模型转化</span></li>
-              <li><strong>应用场景</strong><span>复杂低空协同决策、跨平台多机群调度</span></li>
-            </ul>
-          </div>
-        </article>
 
-        <article class="solution-module reveal">
-          <div class="solution-media is-contained">
-            <img src="墨悉官网/产品与方案/碎蜂/产品图/1d0d3ed82d5d2dabb43e24a9c5e85e2d.png" alt="碎蜂高速自主拦截系统产品渲染图">
+        <p class="industry-bridge"><span>FROM MODEL TO MISSION</span>将协同世界模型带入低空安全、无人巡检与智能工业制造。</p>
+      </div>
+    </section>
+
+    <section class="section theme-night" id="products" aria-labelledby="products-title">
+      <div class="container">
+        <div class="section-intro">
+          <div>
+            <span class="section-label">Train · Orchestrate · Execute</span>
+            <h2 class="display-title" id="products-title">从训练、协同到执行，把理论落到真实任务</h2>
           </div>
-          <div class="solution-content">
-            <p class="solution-role">Execute / 执行</p>
-            <h3>碎蜂 低空安防系统</h3>
-            <p class="solution-lead">硬件联合交付，低成本、快速部署的高速拦截系统</p>
-            <p>包含高速自主拦截机与便携式发射枪，实现物理层面的精准拦截与安防执行。</p>
-            <div class="solution-specs" aria-label="碎蜂核心指标">
-              <div class="solution-spec"><strong>217 km/h</strong><span>手持款最大飞行速度</span></div>
-              <div class="solution-spec"><strong>300 km/h</strong><span>雷达目标速度</span></div>
-              <div class="solution-spec"><strong>&lt; 0.5 m</strong><span>处置精度 CEP</span></div>
+          <p>空间训练场完成仿真与策略迭代，COS 负责感知、决策与任务编排，碎蜂承担真实世界的低空安防执行与验证。</p>
+        </div>
+
+        <div class="product-flow">
+          <article class="product-chapter">
+            <div class="product-media" data-video-frame>
+              <video id="video-training" poster="assets/v2/products/training-poster.jpg" muted loop playsinline preload="metadata">
+                <source src="assets/v2/products/training.mp4" type="video/mp4">
+                您的浏览器不支持视频播放；产品说明仍可在右侧阅读。
+              </video>
+              <button class="video-toggle" type="button" aria-controls="video-training" aria-pressed="false" data-video-toggle>播放演示</button>
+              <span class="media-fallback" role="status">视频暂不可用，请查看产品文字说明。</span>
             </div>
-            <ul class="solution-facts">
-              <li><strong>系统构成</strong><span>高速自主拦截机 / 便携式发射枪</span></li>
+            <div class="product-copy">
+              <span class="product-role">Train / 训练</span>
+              <h3>空间训练场</h3>
+              <p>面向 1000m 以下低空场景的高保真仿真与任务验证平台。以空间重建、物理与因果真实性建模、噪声处理和真实迁移为基础，支持多机协同仿真、策略训练与任务验证。</p>
+              <ul class="product-facts">
+                <li><strong>空间重建</strong><span>构建可复用的低空数字场景</span></li>
+                <li><strong>多机仿真</strong><span>在真实约束下验证协同任务</span></li>
+                <li><strong>策略闭环</strong><span>降低实体试错成本，提升迭代效率</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="product-chapter is-reversed">
+            <div class="product-media" data-video-frame>
+              <video id="video-cos" poster="assets/v2/products/cos-poster.jpg" muted loop playsinline preload="metadata">
+                <source src="assets/v2/products/cos.mp4" type="video/mp4">
+                您的浏览器不支持视频播放；产品说明仍可在左侧阅读。
+              </video>
+              <button class="video-toggle" type="button" aria-controls="video-cos" aria-pressed="false" data-video-toggle>播放演示</button>
+              <span class="media-fallback" role="status">视频暂不可用，请查看产品文字说明。</span>
+            </div>
+            <div class="product-copy">
+              <span class="product-role">Orchestrate / 协同调度</span>
+              <h3>COS 协同操作系统</h3>
+              <p>围绕边缘计算与协同决策，融合多源感知、动态航迹规划和实时任务调度，将环境信息与模型输出转化为可执行的协同方案。</p>
+              <ul class="product-facts">
+                <li><strong>多源感知</strong><span>汇聚场景、目标与智能体状态</span></li>
+                <li><strong>航迹规划</strong><span>面向动态环境持续调整任务路径</span></li>
+                <li><strong>协同调度</strong><span>连接模型决策与多智能体执行</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="product-chapter">
+            <div class="product-media" data-video-frame>
+              <video id="video-bee" poster="assets/v2/products/bee-poster.jpg" muted loop playsinline preload="metadata">
+                <source src="assets/v2/products/bee.mp4" type="video/mp4">
+                您的浏览器不支持视频播放；产品说明仍可在右侧阅读。
+              </video>
+              <button class="video-toggle" type="button" aria-controls="video-bee" aria-pressed="false" data-video-toggle>播放演示</button>
+              <span class="media-fallback" role="status">视频暂不可用，请查看产品文字说明。</span>
+            </div>
+            <div class="product-copy">
+              <span class="product-role">Execute / 执行</span>
+              <h3>碎蜂低空安防系统</h3>
+              <p>由传感、计算、通信模组与高速响应终端构成，支持目标识别、跟踪预测和协同处置，为低空安全任务提供软硬一体的执行与验证能力。</p>
+              <ul class="product-facts">
+                <li><strong>模块硬件</strong><span>标准化组合传感、计算与通信能力</span></li>
+                <li><strong>跟踪预测</strong><span>持续理解动态目标与环境变化</span></li>
+                <li><strong>执行验证</strong><span>连接协同策略与真实终端响应</span></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section theme-white" id="applications" aria-labelledby="applications-title">
+      <div class="container">
+        <div class="section-intro">
+          <div>
+            <span class="section-label">Applications</span>
+            <h2 class="display-title" id="applications-title">一套协同智能底座，面向多类真实场景</h2>
+          </div>
+          <p>以协同世界模型连接不同智能体和任务系统，为复杂环境提供可训练、可编排、可执行的智能能力。</p>
+        </div>
+
+        <div class="application-mosaic">
+          <article class="application-tile">
+            <img src="assets/v2/applications/city.jpg" alt="无人机与地面智能体协同服务城市和园区运营" loading="lazy" width="1600" height="1200">
+            <div class="application-caption">
+              <h3>智慧城市与园区管理</h3>
+              <p>支持室内外自主定位建图、设备状态检索、自动化巡检与路径优化。</p>
+            </div>
+          </article>
+          <article class="application-tile">
+            <img src="assets/v2/applications/industry.jpg" alt="矿区与工业制造场景中的空地协同作业" loading="lazy" width="1600" height="900">
+            <div class="application-caption">
+              <h3>智慧矿区与工业制造</h3>
+              <p>支持空地一体连续作业、异常识别预警、人机协作与安全避障。</p>
+            </div>
+          </article>
+          <article class="application-tile">
+            <img src="assets/v2/applications/rescue.jpg" alt="复杂环境中的协同巡检与应急救援" loading="lazy" width="1600" height="900">
+            <div class="application-caption">
+              <h3>复杂巡检与应急救援</h3>
+              <p>融合空海、空地多域感知与动态避障，完成协同巡检与快速响应。</p>
+            </div>
+          </article>
+          <article class="application-tile">
+            <img src="assets/v2/applications/defense.jpg" alt="复杂空域中的多智能体协同感知与任务验证" loading="lazy" width="1600" height="900">
+            <div class="application-caption">
+              <h3>国防安全与商业航天</h3>
+              <p>面向高速目标识别跟踪、多机编队控制与多源信息融合，支持复杂空域感知和协同任务验证。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section theme-paper" id="partnership" aria-labelledby="partnership-title">
+      <div class="container">
+        <div class="section-intro">
+          <div>
+            <span class="section-label">Industry Partnership</span>
+            <h2 class="display-title" id="partnership-title">与科研机构和产业伙伴共同验证技术价值</h2>
+          </div>
+          <p>从联合研发到现场测试，墨悉与合作伙伴共同推动协同世界模型进入真实任务。</p>
+        </div>
+
+        <div class="partnership-layout is-copy-only">
+          <div class="partnership-copy">
+            <span class="section-label">Featured Collaboration</span>
+            <h3>北京航空航天大学</h3>
+            <p>墨悉中标北京航空航天大学自动化科学与电气工程学院仿真大模型项目，围绕协同世界模型仿真平台、多智能体任务协同决策、场景生成与行为预测推进联合验证。</p>
+            <ul class="partnership-points">
+              <li><strong>协同仿真</strong><span>连接场景生成、策略训练和任务验证</span></li>
+              <li><strong>任务决策</strong><span>研究复杂环境下的多智能体协同机制</span></li>
+              <li><strong>产学联动</strong><span>让研究成果进入可验证的产业任务</span></li>
             </ul>
           </div>
-        </article>
-
-        <article class="solution-module reveal">
-          <div class="solution-media">
-            <video src="墨悉官网/产品与方案/空间训练场/微信视频2026-06-30_151900_129.mp4" muted loop autoplay playsinline preload="metadata"></video>
-          </div>
-          <div class="solution-content">
-            <p class="solution-role">Train / 训练</p>
-            <h3>空间训练场</h3>
-            <p class="solution-lead">多场景仿真与高并发推演平台</p>
-            <p>在数字空间中进行全数字化推演与智能协同，降低实体试错成本，提升策略迭代效率。</p>
-            <ul class="solution-facts">
-              <li><strong>核心优势</strong><span>高并发仿真推演 / 多场景高保真还原 / 策略闭环训练</span></li>
-              <li><strong>核心效益</strong><span>极低试错成本 / 策略迭代效率倍增</span></li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section dark" id="company">
-    <div class="container">
-      <div class="company-layout">
-        <div class="company-image reveal">
-          <img src="墨悉官网/关于墨悉/公司介绍/图片5.png" alt="墨悉科技空间智能基地建筑效果图">
         </div>
-        <div class="company-copy reveal">
-          <p class="section-kicker">关于墨悉</p>
-          <h2>面向物理AI的具身空间智能公司</h2>
-          <p>墨悉科技起源于悉尼大学 TML 实验室，于 2025 年 9 月落户杭州。团队由世界级人工智能科学家刘同亮教授领衔，深耕世界模型和多智能体协同技术。</p>
-          <p>墨悉通过具身空间智能，赋能无人机、机器人、机器狗、无人船等多智能体，让 AI 能理解真实空间、协同执行任务并持续进化。</p>
+
+        <div class="partner-strip" aria-label="产业合作伙伴">
+          <div><strong>中国科学院空天信息创新研究院</strong><span>低空安全关键技术测试与探测识别效能评估验证</span></div>
+          <div><strong>中国外运 Sinotrans</strong><span>物流场景智能化与多智能体协同方案验证</span></div>
+          <div><strong>航链科技</strong><span>人工智能飞控系统联合研发</span></div>
         </div>
       </div>
-      <div class="news-grid">
-        <article class="news-item reveal">
-          <img src="墨悉官网/关于墨悉/公司动态/产品发布.jpg" alt="墨悉产品发布会现场">
-          <div><strong>产品发布</strong><span>实现技术产品化</span></div>
-        </article>
-        <article class="news-item reveal">
-          <img src="墨悉官网/关于墨悉/公司动态/校企联动.jpg" alt="北京航空航天大学校徽">
-          <div><strong>校企联动</strong><span>共建联合实验室</span></div>
-        </article>
-        <article class="news-item reveal">
-          <img src="墨悉官网/关于墨悉/公司动态/荣誉获得.jpg" alt="墨悉荣誉获得现场">
-          <div><strong>荣誉获得</strong><span>入选海创未来领军人才项目</span></div>
-        </article>
-        <article class="news-item reveal">
-          <img src="墨悉官网/关于墨悉/公司动态/行业发声.jpg" alt="刘同亮教授行业演讲">
-          <div><strong>行业发声</strong><span>分享空间智能前沿技术</span></div>
-        </article>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section" id="research">
-    <div class="container">
-      <div class="section-head reveal">
+    <section class="section theme-night" aria-label="进一步了解墨悉">
+      <div class="container credibility-links">
+        <a class="credibility-link" href="about.html">
+          <img src="assets/v2/about/company-profile.webp" alt="墨悉科技团队与产品展示空间" loading="lazy" width="1600" height="1000">
+          <span class="credibility-copy"><span>About Melsy</span><h3>认识墨悉与我们的产业路径</h3></span>
+        </a>
+        <a class="credibility-link" href="research.html">
+          <img src="assets/v2/products/low-altitude-background.jpg" alt="多无人机在低空城市环境中构成协同网络" loading="lazy" width="1920" height="1080">
+          <span class="credibility-copy"><span>Research &amp; Technology</span><h3>连接科研网络与代表性成果</h3></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section contact-stage" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-layout">
         <div>
-          <p class="section-kicker">研究与技术</p>
-          <h2 class="section-title">全球科研网络与产业合作共同构成技术底座</h2>
+          <span class="section-label">Start a Collaboration</span>
+          <h2 id="contact-title">让协同智能进入真实世界</h2>
+          <p>商务合作、技术交流、媒体沟通或联合实验室建设，欢迎扫码关注墨悉科技，获取更多信息并与我们联系。</p>
         </div>
-        <p class="section-copy">墨悉围绕低空世界模型、空间理解和 3D 场景感知沉淀科研成果，并与产业伙伴共同推进空间智能落地。</p>
+        <figure class="qr-card">
+          <img src="assets/v2/about/contact-qr.jpg" alt="墨悉科技联系二维码" loading="lazy" width="1000" height="1000">
+          <span>扫码关注，了解更多</span>
+        </figure>
       </div>
-      <div class="research-grid">
-        <article class="research-panel reveal">
-          <h3>合作网络</h3>
-          <div class="logo-wall" aria-label="合作方 logo">
-            <img src="墨悉官网/研究与技术/合作大厂/图片10.png" alt="HeyGen">
-            <img src="墨悉官网/研究与技术/合作大厂/图片11.png" alt="Tencent">
-            <img src="墨悉官网/研究与技术/合作大厂/图片12.png" alt="Baidu">
-            <img src="墨悉官网/研究与技术/合作大厂/图片13.png" alt="Alibaba">
-            <img src="墨悉官网/研究与技术/合作大厂/图片14.png" alt="ByteDance">
-            <img src="墨悉官网/研究与技术/合作大厂/图片16.png" alt="JD.com">
-            <img src="墨悉官网/研究与技术/合作大厂/图片17.png" alt="Huawei">
-            <img src="墨悉官网/研究与技术/合作大厂/图片18.png" alt="智平方">
-            <img src="墨悉官网/研究与技术/合作大厂/图片20.png" alt="智元机器人">
-            <img src="墨悉官网/研究与技术/合作大厂/图片21.png" alt="迈驰智行">
-          </div>
-        </article>
-        <article class="research-panel reveal">
-          <h3>论文与专利</h3>
-          <div class="paper-feed" aria-label="论文与专利成果列表">
-            <article class="paper-card">
-              <span class="paper-tag is-highlight">ECCV 2026 录用</span>
-              <h4>HUGE-Bench: A Benchmark for High-Level UAV Vision-Language-Action Tasks</h4>
-              <p class="paper-meta">Jingyu Guo, Ziye Chen, Ziwen Li, Zhengqing Gao, Jiaxin Huang, Hanlue Zhang, Fengming Huang, Yu Yao, Tongliang Liu, Mingming Gong</p>
-              <p class="paper-highlight">面向真实低空任务重新定义无人机 VLA 评测，覆盖 4 个真实数字孪生场景、8 类高层任务与 2.56M 米轨迹，并加入碰撞感知评估。</p>
-              <div class="paper-links">
-                <a href="https://arxiv.org/abs/2603.19822" target="_blank" rel="noopener">arXiv ↗</a>
-              </div>
-            </article>
-            <article class="paper-card">
-              <span class="paper-tag">3D 空间推理数据集</span>
-              <h4>Surprise3D: A Dataset for Spatial Understanding and Reasoning in Complex 3D Scenes</h4>
-              <p class="paper-meta">Jiaxin Huang, Ziwen Li, Hanlue Zhang, Runnan Chen, Zhengqing Gao, Xiao He, Yandong Guo, Wenping Wang, Tongliang Liu, Mingming Gong</p>
-              <p class="paper-highlight">构建无物体名称捷径的空间查询，让模型必须真正理解相对位置、视角关系和距离推理，而不是依赖语义词提示。</p>
-              <div class="paper-links">
-                <a href="https://openreview.net/forum?id=JaOcuRbglz" target="_blank" rel="noopener">OpenReview ↗</a>
-                <a href="https://arxiv.org/abs/2507.07781" target="_blank" rel="noopener">arXiv ↗</a>
-                <a href="https://github.com/liziwennba/SUPRISE" target="_blank" rel="noopener">Code ↗</a>
-              </div>
-            </article>
-            <article class="paper-card">
-              <span class="paper-tag">ICCV 2025 Workshop</span>
-              <h4>OpenInsGaussian: Open-vocabulary Instance Gaussian Segmentation with Context-aware Cross-view Fusion</h4>
-              <p class="paper-meta">Tianyu Huang, Runnan Chen, Dongting Hu, Fengming Huang, Mingming Gong, Tongliang Liu</p>
-              <p class="paper-highlight">通过上下文感知特征抽取与跨视角融合，提升 3D Gaussian 场景中的开放词汇实例分割一致性与细节完整度。</p>
-              <div class="paper-links">
-                <a href="https://arxiv.org/abs/2510.18253" target="_blank" rel="noopener">arXiv ↗</a>
-                <a href="https://openaccess.thecvf.com/content/ICCV2025W/Findings/papers/Huang_OpenInsGaussian_Open-vocabulary_Instance_Gaussian_Segmentation_with_Context-aware_Cross-view_Fusion_ICCVW_2025_paper.pdf" target="_blank" rel="noopener">Paper ↗</a>
-              </div>
-            </article>
-          </div>
-        </article>
-      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-brand">Melsy Technology · 墨悉科技</span>
+      <span>© <span data-current-year>2026</span> 墨悉科技. All rights reserved.</span>
     </div>
-  </section>
-
-  <section class="section" id="contact">
-    <div class="container">
-      <div class="contact-band reveal">
-        <div>
-          <h2>与墨悉一起构建低空智能基础设施</h2>
-          <p>商务合作、技术交流、媒体沟通与联合实验室建设，欢迎扫码关注并进一步联系。</p>
-        </div>
-        <img src="墨悉官网/关于墨悉/联系我们/8258dd9a1d695323614b18914fd8aee3.jpg" alt="墨悉科技联系二维码">
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div><strong>墨悉科技 Melsy Technology</strong><br>感知空间 · 协同智能</div>
-    <div>© 2026 Melsy Technology. All rights reserved.</div>
-  </div>
-</footer>
-
-<script>
-const header = document.getElementById('siteHeader');
-const menuButton = document.getElementById('menuButton');
-const mobileNav = document.getElementById('mobileNav');
-
-function setMenu(open) {
-  mobileNav.classList.toggle('is-open', open);
-  menuButton.setAttribute('aria-expanded', String(open));
-}
-
-menuButton.addEventListener('click', () => {
-  setMenu(!mobileNav.classList.contains('is-open'));
-});
-
-mobileNav.querySelectorAll('a').forEach((link) => {
-  link.addEventListener('click', () => setMenu(false));
-});
-
-window.addEventListener('scroll', () => {
-  header.classList.toggle('is-scrolled', window.scrollY > 24);
-}, { passive: true });
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.14 });
-
-document.querySelectorAll('.reveal').forEach((element) => {
-  observer.observe(element);
-});
-</script>
+  </footer>
 </body>
 </html>
