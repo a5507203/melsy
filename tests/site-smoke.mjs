@@ -66,6 +66,13 @@ function assertVisibleIncludes(html, expected, context) {
   );
 }
 
+function assertVisibleExcludes(html, unexpected, context) {
+  assert(
+    !compactText(visibleText(html)).includes(compactText(unexpected)),
+    `${context} must not include removed copy: ${unexpected}`,
+  );
+}
+
 function openingTags(html, tagName) {
   return [...html.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'gi'))].map((match) => match[0]);
 }
@@ -320,9 +327,15 @@ function assertBusinessContentBoundaries(pages) {
       assert(!pattern.test(text), `${page.name} must not publish prohibited or PPT-only claim: ${label}`);
     }
     assert(
-      !/assets\/v2\/research\/(?:industry-partners|schools)\//i.test(page.html),
-      `${page.name} must not infer public partnerships from unapproved logo-library assets`,
+      !/assets\/v2\/research\/industry-partners\//i.test(page.html),
+      `${page.name} must not infer public partnerships from unapproved industry-logo assets`,
     );
+    if (page.name !== 'research.html') {
+      assert(
+        !/assets\/v2\/research\/schools\//i.test(page.html),
+        `${page.name} must not publish research-network school logos outside the approved research page`,
+      );
+    }
   }
 }
 
@@ -440,6 +453,15 @@ for (const page of pages) {
 assertSingleH1(indexPage, '协同世界模型：具身智能时代的新范式');
 assertSingleH1(aboutPage, '面向物理 AI 的具身空间智能公司');
 assertSingleH1(researchPage, '从世界模型到空间智能，构建协同技术底座');
+const aboutTitle = pairedElements(aboutPage.html, 'h1')[0];
+const aboutTitleLines = pairedElements(aboutTitle, 'span').filter((element) =>
+  /class=["'][^"']*\babout-title-line\b[^"']*["']/i.test(elementOpeningTag(element)),
+);
+assert(aboutTitleLines.length === 2, 'about hero title must render as exactly two intentional lines');
+assert(
+  visibleText(aboutTitleLines[0]) === '面向物理 AI 的' && visibleText(aboutTitleLines[1]) === '具身空间智能公司',
+  'about hero title must break after 的 without splitting 具身',
+);
 
 // AS-1: the first viewport communicates the category, value, and two next actions.
 for (const copy of [
@@ -454,8 +476,11 @@ assert(/<a\b[^>]*href=["']#contact["'][^>]*>[\s\S]*?商务合作[\s\S]*?<\/a>/i.
 assert(/<a\b[^>]*href=["']#products["'][^>]*>[\s\S]*?产品\s*Demo[\s\S]*?<\/a>/i.test(indexPage.html), 'AS-1 hero must link the product Demo action to #products');
 
 // AS-2: all three paradigms remain readable without JavaScript and expose keyboard tab semantics.
-for (const copy of ['单智能体时代', '多智能体时代', '协同智能时代', '资源约束机制', '协同推理机制', '奖惩分配机制']) {
+for (const copy of ['单智能体时代', '多智能体时代', '协同智能时代']) {
   assertVisibleIncludes(indexPage.html, copy, 'AS-2 theory section');
+}
+for (const copy of ['三个机制，让协同成为系统能力', '资源约束机制', '协同推理机制', '奖惩分配机制']) {
+  assertVisibleExcludes(indexPage.html, copy, 'AS-2 simplified theory section');
 }
 assert(openingTags(indexPage.html, 'button').filter((tag) => getAttribute(tag, 'role') === 'tab').length === 3, 'AS-2 must expose exactly three tab buttons');
 assert(openingTags(indexPage.html, 'article').filter((tag) => getAttribute(tag, 'role') === 'tabpanel').length === 3, 'AS-2 must expose exactly three tab panels');
@@ -472,6 +497,21 @@ assertNarrativeOrder(indexPage.html);
 for (const copy of ['Train / 训练', 'Orchestrate / 协同调度', 'Execute / 执行']) {
   assertVisibleIncludes(indexPage.html, copy, 'AS-3 product role');
 }
+const productDownload = pairedElements(indexPage.html, 'a').find((element) =>
+  /class=["'][^"']*\bproduct-download-link\b[^"']*["']/i.test(elementOpeningTag(element)),
+);
+assert(productDownload, 'AS-3 must expose the product-atlas download action');
+const productDownloadTag = elementOpeningTag(productDownload);
+assert(
+  getAttribute(productDownloadTag, 'href') === 'assets/v2/products/shard-bee-product-brochure.pdf',
+  'AS-3 product download must target the published product atlas',
+);
+assert(getAttribute(productDownloadTag, 'download') === '图册1.pdf', 'AS-3 product atlas must download as 图册1.pdf');
+assertVisibleIncludes(productDownload, '点击下载 PDF', 'AS-3 product download action');
+assert(
+  statSync(path.join(root, 'assets/v2/products/shard-bee-product-brochure.pdf')).size < 100 * 1024 * 1024,
+  'AS-3 product atlas must remain below the GitHub 100 MB single-file limit',
+);
 
 // AS-4: four named applications, one corresponding image and capability description each.
 const applicationsStart = firstIndex(indexPage.html, /<section\b[^>]*id="applications"/i, 'applications');
@@ -488,7 +528,7 @@ for (const image of openingTags(applicationsHtml, 'img')) {
 }
 
 // AS-5: approved partnership, company, and research evidence only.
-for (const copy of ['北京航空航天大学', '中国科学院空天信息创新研究院', '中国外运 Sinotrans', '航链科技']) {
+for (const copy of ['北京航空航天大学', '中国某研究院', '中国外运 Sinotrans', '航链科技']) {
   assertVisibleIncludes(indexPage.html, copy, 'AS-5 partnership evidence');
 }
 for (const copy of ['悉尼大学 TML 实验室', '2025 年 9 月落户杭州', '刘同亮教授', '公司动态', '一起让协同智能进入真实世界']) {
@@ -504,20 +544,37 @@ for (const copy of [
   'HUGE-Bench',
   'Surprise3D',
   'OpenInsGaussian',
+  '联合研究',
+  '数据与评测',
+  '系统验证',
+  '新加坡国立大学',
+  '南洋理工大学',
+  '中国科学技术大学',
+  '哈尔滨工业大学',
+  '北京航空航天大学',
+  '南京航空航天大学',
+  '山东大学',
+  '武汉大学',
 ]) {
   assertVisibleIncludes(researchPage.html, copy, 'AS-5 research evidence');
 }
+const institutionLogoWall = pairedElements(researchPage.html, 'ul').find((element) =>
+  /class=["'][^"']*\binstitution-logo-wall\b[^"']*["']/i.test(elementOpeningTag(element)),
+);
+assert(institutionLogoWall, 'research network must render the approved institution logo wall');
+const institutionLogos = openingTags(institutionLogoWall, 'img');
+assert(institutionLogos.length === 8, `research network must render exactly eight school logos; found ${institutionLogos.length}`);
+for (const logo of institutionLogos) {
+  assert(getAttribute(logo, 'alt') === '', 'school logos with visible labels must use empty alt text to avoid duplicate announcements');
+  assert(hasAttribute(logo, 'width') && hasAttribute(logo, 'height'), 'school logos must reserve intrinsic dimensions');
+}
 assert(
-  /class=["'][^"']*\bphoto-pair\b[^"']*\bteam-photo-pair\b[^"']*["']/i.test(researchPage.html),
-  'research team portraits must use the uncropped team-photo-pair treatment',
+  !/assets\/v2\/research\/team\//i.test(researchPage.html),
+  'research team section must not render portrait images',
 );
 assert(
-  /\.photo-pair\.team-photo-pair\s+img\s*\{[^}]*object-fit:\s*contain\s*;/is.test(styles),
-  'research team portraits must use object-fit: contain so people are not cropped',
-);
-assert(
-  /\.photo-pair\.team-photo-pair\s+img:last-child\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*4\s*;/is.test(styles),
-  'the second research portrait must preserve its 3:4 source composition',
+  /<div\s+class=["']container partnership-layout["']>\s*<div\s+class=["']partnership-copy["']>[\s\S]*?<\/div>\s*<ul\s+class=["']partnership-points["']>/i.test(researchPage.html),
+  'research team points must occupy the second partnership column',
 );
 assertBusinessContentBoundaries(pages);
 
