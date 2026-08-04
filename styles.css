@@ -620,47 +620,25 @@ body:not([data-page="home"]) .site-header {
   display: grid;
   grid-template-columns: minmax(16rem, 0.42fr) minmax(0, 1fr);
   gap: clamp(2rem, 6vw, 5rem);
-  align-items: start;
+  align-items: stretch;
 }
 
-.paradigm-tabs {
-  display: grid;
-  border-top: 1px solid var(--line);
-}
-
-.paradigm-tab {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.9rem;
+.paradigm-current {
+  display: flex;
   align-items: center;
+  justify-content: center;
   min-height: 5.2rem;
   padding: 1rem 0.6rem;
-  border: 0;
+  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
-  text-align: left;
-  cursor: pointer;
+  text-align: center;
 }
 
-.paradigm-tab b {
-  color: var(--brand-blue);
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-size: 0.82rem;
-}
-
-.paradigm-tab strong {
-  color: var(--ink);
-  font-size: 1.05rem;
-}
-
-.paradigm-tab[aria-selected="true"] {
-  color: var(--ink);
-}
-
-.paradigm-tab[aria-selected="true"] b,
-.paradigm-tab[aria-selected="true"] strong {
+.paradigm-current strong {
   color: var(--brand-red);
+  font-size: clamp(2.25rem, 3vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 .paradigm-stage {
@@ -686,10 +664,6 @@ body:not([data-page="home"]) .site-header {
   padding-top: 1.2rem;
   border-top: 1px solid #b6c7d0;
   color: var(--muted);
-}
-
-.js .paradigm-panel[hidden] {
-  display: none;
 }
 
 .formula-field {
@@ -954,6 +928,17 @@ body:not([data-page="home"]) .site-header {
 
 .partnership-layout--intro-aligned .partnership-points {
   margin-left: 0;
+}
+
+.partnership-slide {
+  margin: clamp(3rem, 6vw, 5rem) auto;
+}
+
+.partnership-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
 }
 
 .partnership-copy h3 {
@@ -1579,21 +1564,6 @@ body:not([data-page="home"]) .site-header {
     grid-template-columns: 1fr;
   }
 
-  .paradigm-tabs {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .paradigm-tab {
-    grid-template-columns: 1fr;
-    align-content: start;
-    min-height: 7.3rem;
-    border-right: 1px solid var(--line);
-  }
-
-  .paradigm-tab:last-child {
-    border-right: 0;
-  }
-
   .product-chapter.is-reversed .product-media,
   .product-chapter.is-reversed .product-copy {
     order: initial;
@@ -1684,16 +1654,6 @@ body:not([data-page="home"]) .site-header {
   .signal-trace {
     left: 22%;
     width: 58%;
-  }
-
-  .paradigm-tabs {
-    grid-template-columns: 1fr;
-  }
-
-  .paradigm-tab {
-    grid-template-columns: auto 1fr;
-    min-height: 4.7rem;
-    border-right: 0;
   }
 
   .paradigm-stage {

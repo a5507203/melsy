@@ -41,51 +41,6 @@ if (menuButton && mobilePanel) {
   });
 }
 
-const tabLists = document.querySelectorAll('[data-tab-list]');
-
-for (const tabList of tabLists) {
-  const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
-  const panelHost = document.querySelector(tabList.dataset.panelHost);
-  if (!panelHost || tabs.length === 0) continue;
-
-  const panels = Array.from(panelHost.querySelectorAll('[role="tabpanel"]'));
-
-  function activateTab(nextTab) {
-    for (const tab of tabs) {
-      const selected = tab === nextTab;
-      tab.setAttribute('aria-selected', String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-    }
-
-    for (const panel of panels) {
-      panel.hidden = panel.id !== nextTab.getAttribute('aria-controls');
-    }
-  }
-
-  tabList.addEventListener('click', (event) => {
-    const nextTab = event.target.closest('[role="tab"]');
-    if (nextTab && tabs.includes(nextTab)) activateTab(nextTab);
-  });
-
-  tabList.addEventListener('keydown', (event) => {
-    const currentIndex = tabs.indexOf(document.activeElement);
-    if (currentIndex < 0) return;
-
-    let nextIndex = currentIndex;
-    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (currentIndex + 1) % tabs.length;
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-    if (event.key === 'Home') nextIndex = 0;
-    if (event.key === 'End') nextIndex = tabs.length - 1;
-    if (nextIndex === currentIndex) return;
-
-    event.preventDefault();
-    tabs[nextIndex].focus();
-    activateTab(tabs[nextIndex]);
-  });
-
-  activateTab(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true') || tabs[0]);
-}
-
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const videoButtons = document.querySelectorAll('[data-video-toggle]');
 

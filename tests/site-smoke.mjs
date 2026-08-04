@@ -475,22 +475,24 @@ for (const copy of [
 assert(/<a\b[^>]*href=["']#contact["'][^>]*>[\s\S]*?商务合作[\s\S]*?<\/a>/i.test(indexPage.html), 'AS-1 hero must link 商务合作 to #contact');
 assert(/<a\b[^>]*href=["']#products["'][^>]*>[\s\S]*?产品\s*Demo[\s\S]*?<\/a>/i.test(indexPage.html), 'AS-1 hero must link the product Demo action to #products');
 
-// AS-2: all three paradigms remain readable without JavaScript and expose keyboard tab semantics.
-for (const copy of ['单智能体时代', '多智能体时代', '协同智能时代']) {
-  assertVisibleIncludes(indexPage.html, copy, 'AS-2 theory section');
+// AS-2: the theory section focuses on collaborative intelligence without obsolete era tabs.
+assertVisibleIncludes(indexPage.html, '协同智能时代', 'AS-2 theory section');
+assert(
+  /<div\b[^>]*class=["'][^"']*\bparadigm-current\b[^"']*["'][^>]*>\s*<strong>协同智能时代<\/strong>\s*<\/div>/i.test(indexPage.html),
+  'AS-2 collaborative intelligence label must not retain a section number',
+);
+for (const copy of ['单智能体时代', '多智能体时代']) {
+  assertVisibleExcludes(indexPage.html, copy, 'AS-2 retired theory eras');
 }
 for (const copy of ['三个机制，让协同成为系统能力', '资源约束机制', '协同推理机制', '奖惩分配机制']) {
   assertVisibleExcludes(indexPage.html, copy, 'AS-2 simplified theory section');
 }
-assert(openingTags(indexPage.html, 'button').filter((tag) => getAttribute(tag, 'role') === 'tab').length === 3, 'AS-2 must expose exactly three tab buttons');
-assert(openingTags(indexPage.html, 'article').filter((tag) => getAttribute(tag, 'role') === 'tabpanel').length === 3, 'AS-2 must expose exactly three tab panels');
-for (const panel of openingTags(indexPage.html, 'article').filter((tag) => getAttribute(tag, 'role') === 'tabpanel')) {
-  assert(!hasAttribute(panel, 'hidden'), 'AS-2 tab content must remain readable when JavaScript is unavailable');
-}
-for (const key of ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'Home', 'End']) {
-  assert(siteScript.includes(`'${key}'`), `AS-2 tab keyboard handling must support ${key}`);
-}
-assert(siteScript.includes('panel.hidden'), 'AS-2 JavaScript must synchronize the active tab panel');
+assert(openingTags(indexPage.html, 'button').every((tag) => getAttribute(tag, 'role') !== 'tab'), 'AS-2 must not expose obsolete theory tabs');
+assert(
+  openingTags(indexPage.html, 'article').every((tag) => getAttribute(tag, 'role') !== 'tabpanel'),
+  'AS-2 must not expose obsolete theory tab panels',
+);
+assert(!siteScript.includes('[data-tab-list]'), 'AS-2 must not retain obsolete theory tab behavior');
 
 // AS-3 and homepage storytelling order.
 assertNarrativeOrder(indexPage.html);
