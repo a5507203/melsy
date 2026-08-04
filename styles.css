@@ -181,6 +181,14 @@ p {
   letter-spacing: -0.035em;
 }
 
+.theory-title-line {
+  display: block;
+}
+
+#theory-title {
+  max-width: none;
+}
+
 .products-display-title {
   max-width: none;
   font-size: clamp(2.35rem, 5vw, 4.5rem);
@@ -191,6 +199,10 @@ p {
 }
 
 @media (min-width: 901px) {
+  .theory-title-line {
+    white-space: nowrap;
+  }
+
   .products-display-title > span {
     white-space: nowrap;
   }
@@ -618,41 +630,58 @@ body:not([data-page="home"]) .site-header {
 
 .paradigm-layout {
   display: grid;
-  grid-template-columns: minmax(16rem, 0.42fr) minmax(0, 1fr);
-  gap: clamp(2rem, 6vw, 5rem);
+  grid-template-columns: minmax(0, 1.15fr) minmax(24rem, 0.85fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
   align-items: stretch;
 }
 
-.paradigm-current {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 5.2rem;
-  padding: 1rem 0.6rem;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  text-align: center;
+.paradigm-visual {
+  min-height: 24rem;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #dfe7ec;
 }
 
-.paradigm-current strong {
-  color: var(--brand-red);
-  font-size: clamp(2.25rem, 3vw, 3.5rem);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+.paradigm-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .paradigm-stage {
+  display: flex;
+  align-items: center;
   min-height: 24rem;
   padding: clamp(2rem, 5vw, 4rem);
   border-radius: var(--radius);
   background: #e6edf1;
 }
 
+.paradigm-panel {
+  width: 100%;
+}
+
 .paradigm-panel h3 {
-  max-width: 15ch;
-  margin-bottom: 1rem;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  max-width: none;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2.25rem, 3.6vw, 3.7rem);
+  line-height: 1.02;
   letter-spacing: -0.03em;
+}
+
+.paradigm-title-zh,
+.paradigm-title-en {
+  display: block;
+}
+
+.paradigm-title-zh {
+  margin-bottom: 0.75rem;
+  color: var(--brand-red);
+  font-size: clamp(1.45rem, 2vw, 2.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .paradigm-panel p {
@@ -1562,6 +1591,11 @@ body:not([data-page="home"]) .site-header {
 
   .paradigm-layout {
     grid-template-columns: 1fr;
+  }
+
+  .paradigm-visual {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
   }
 
   .product-chapter.is-reversed .product-media,
