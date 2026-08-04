@@ -382,7 +382,7 @@ function assertVideos(indexHtml) {
   const expected = [
     ['video-training', 'assets/v2/products/training.mp4', 'assets/v2/products/training-poster.jpg'],
     ['video-cos', 'assets/v2/products/cos.mp4', 'assets/v2/products/cos-poster.jpg'],
-    ['video-bee', 'assets/v2/products/bee.mp4', 'assets/v2/products/bee-poster.jpg'],
+    ['video-bee', 'assets/v2/products/bee.mp4?v=2', 'assets/v2/products/bee-poster.jpg?v=2'],
   ];
   assert(videos.length === expected.length, `index.html must contain exactly three product videos; found ${videos.length}`);
 
@@ -413,7 +413,7 @@ function assertVideos(indexHtml) {
     assert(getAttribute(button, 'aria-pressed') === 'false', `${id} button must expose its initial paused state`);
     assertVisibleIncludes(frame[1], '视频暂不可用，请查看产品文字说明。', `${id} fallback`);
 
-    probeVideo(sourcePath);
+    probeVideo(sourcePath.split('?')[0]);
   }
 }
 
