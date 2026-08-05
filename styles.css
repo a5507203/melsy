@@ -1369,9 +1369,14 @@ body:not([data-page="home"]) .site-header {
 }
 
 .research-hero-grid h1 {
-  max-width: 13ch;
-  font-size: clamp(3rem, 7vw, 5.8rem);
+  max-width: none;
+  font-size: clamp(3rem, 4.6vw, 5rem);
   letter-spacing: -0.035em;
+}
+
+.research-title-line {
+  display: block;
+  white-space: nowrap;
 }
 
 .research-stat {
@@ -1480,6 +1485,22 @@ body:not([data-page="home"]) .site-header {
   list-style: none;
 }
 
+.publication-intro {
+  max-width: 46rem;
+  margin: clamp(4rem, 8vw, 7rem) 0 clamp(1.75rem, 4vw, 3rem);
+}
+
+.publication-intro h3 {
+  margin: 1rem 0 0.75rem;
+  font-size: clamp(1.85rem, 3.5vw, 3rem);
+  line-height: 1.15;
+}
+
+.publication-intro p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .paper-item {
   display: grid;
   grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr) auto;
@@ -1487,6 +1508,29 @@ body:not([data-page="home"]) .site-header {
   align-items: start;
   padding: 2rem 0;
   border-bottom: 1px solid var(--line);
+}
+
+.publication-item {
+  grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+}
+
+.publication-title-link {
+  color: var(--brand-blue);
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.publication-title-link:hover {
+  color: var(--brand-red);
+  text-decoration-color: currentColor;
+}
+
+.publication-title-link:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .paper-meta {
@@ -1668,6 +1712,10 @@ body:not([data-page="home"]) .site-header {
 
   #about-title {
     font-size: clamp(2.2rem, 10.5vw, 3rem);
+  }
+
+  .research-title-line {
+    white-space: normal;
   }
 
   .hero-lead {
