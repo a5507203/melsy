@@ -787,9 +787,9 @@ body:not([data-page="home"]) .site-header {
 
 .product-media--static {
   display: block;
-  width: min(100%, 30rem);
+  width: 100%;
   aspect-ratio: auto;
-  justify-self: center;
+  justify-self: stretch;
 }
 
 .product-media--static .product-static-image {
