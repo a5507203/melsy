@@ -866,6 +866,11 @@ body:not([data-page="home"]) .site-header {
   letter-spacing: -0.035em;
 }
 
+.product-title--stacked > span {
+  display: block;
+  white-space: nowrap;
+}
+
 .product-copy > p {
   color: var(--muted-dark);
   font-size: 1.08rem;
