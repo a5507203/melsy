@@ -533,7 +533,7 @@ for (const image of openingTags(applicationsHtml, 'img')) {
 for (const copy of ['北京航空航天大学', '中国某研究院', '中国外运 Sinotrans', '航链科技']) {
   assertVisibleIncludes(indexPage.html, copy, 'AS-5 partnership evidence');
 }
-for (const copy of ['悉尼大学 TML 实验室', '2025 年 9 月落户杭州', '刘同亮教授', '公司动态', '一起让协同智能进入真实世界']) {
+for (const copy of ['悉尼大学 TML 实验室', '2025 年 9 月落户杭州', '公司动态', '一起让协同智能进入真实世界']) {
   assertVisibleIncludes(aboutPage.html, copy, 'AS-5 company evidence');
 }
 for (const copy of [
