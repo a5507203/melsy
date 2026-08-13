@@ -561,6 +561,14 @@ const collaborationForm = pairedElements(indexPage.html, 'form').find((element) 
   hasAttribute(elementOpeningTag(element), 'data-collaboration-form'),
 );
 assert(collaborationForm, 'AS-9 homepage contact section must contain the collaboration form');
+assert(
+  getAttribute(elementOpeningTag(collaborationForm), 'aria-describedby') === 'collaboration-form-status',
+  'AS-9 form description must reference only the live submission status',
+);
+assert(
+  !indexPage.html.includes('提交即表示你同意我们仅为联系与合作沟通处理这些信息'),
+  'AS-9 removed contact-form notice must not be rendered',
+);
 const collaborationFields = [
   ['country', 'input', 'text', true, '100'],
   ['organizationType', 'select', null, true, null],

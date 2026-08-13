@@ -36,7 +36,7 @@ Melsy is a physical-AI and embodied spatial-intelligence company. Its differenti
 - No CMS, database, online purchase, or authenticated area in this version.
 - The homepage contact area includes a client-validated collaboration inquiry form with country/region, organization type, given name, family name, work email, phone, organization name, organization website, and requirements. Country/region, organization type, both name fields, work email, and requirements are required.
 - The contact form submits validated inquiries to a dedicated Cloudflare Worker, which sends one transactional email through Resend to the configured Melsy inbox. The browser never receives the Resend key and cannot choose the sender or recipient.
-- A successful UI state means the Worker and Resend accepted the request; it must not claim final mailbox delivery. Failures preserve the draft and keep the contact QR code available as a recovery path.
+- A successful UI state means the Worker and Resend accepted the request; it must not claim final mailbox delivery. Visible form fields survive same-tab refreshes and failures for the current browser session, while successful acceptance clears the draft. The hidden anti-spam field is never retained, and the contact QR code remains available as a recovery path.
 - Hide the English entry until complete English copy exists.
 - Financing, valuation, revenue forecasts, competitor comparisons, and roadmap content from the presentation are not public website content.
 - Strong claims and sensitive metrics are omitted or softened unless separately approved and evidenced.
