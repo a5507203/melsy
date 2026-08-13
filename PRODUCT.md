@@ -24,16 +24,19 @@ Melsy is a physical-AI and embodied spatial-intelligence company. Its differenti
 ## Operating Context
 
 - Visitors usually arrive through a company introduction, industry event, partner referral, research result, or product demonstration.
-- The homepage carries the core persuasion path; About Melsy and Research & Technology provide deeper credibility.
+- The homepage carries the core persuasion path; About Melsy provides deeper company credibility.
 - Real images, videos, research materials, partner references, and company documents are the source of truth. The website is not a product console or operations system.
 
 ## Capabilities and Constraints
 
-- Chinese-first, responsive static website built with HTML, CSS, and JavaScript.
-- Homepage sequence: hero, collaborative-world-model theory, products and low-altitude landing, application scenarios, industrial cooperation, and contact CTA.
-- Separate About Melsy and Research & Technology pages.
+- Chinese-first, responsive static frontend built with HTML, CSS, and JavaScript, with a narrowly scoped Cloudflare Worker for collaboration inquiries.
+- Homepage sequence: hero, collaborative-world-model theory, products and low-altitude landing, application scenarios, company credibility, and contact CTA.
+- Separate About Melsy page.
 - Product loop terminology: Space Training Ground (train), COS (decide and orchestrate), and Shard Bee / 碎蜂 (execute and validate).
-- No CMS, backend, online purchase, authenticated area, or submitted contact form in this version.
+- No CMS, database, online purchase, or authenticated area in this version.
+- The homepage contact area includes a client-validated collaboration inquiry form with country/region, organization type, given name, family name, work email, phone, organization name, organization website, and requirements. Country/region, organization type, both name fields, work email, and requirements are required.
+- The contact form submits validated inquiries to a dedicated Cloudflare Worker, which sends one transactional email through Resend to the configured Melsy inbox. The browser never receives the Resend key and cannot choose the sender or recipient.
+- A successful UI state means the Worker and Resend accepted the request; it must not claim final mailbox delivery. Failures preserve the draft and keep the contact QR code available as a recovery path.
 - Hide the English entry until complete English copy exists.
 - Financing, valuation, revenue forecasts, competitor comparisons, and roadmap content from the presentation are not public website content.
 - Strong claims and sensitive metrics are omitted or softened unless separately approved and evidenced.
@@ -52,7 +55,7 @@ Melsy is a physical-AI and embodied spatial-intelligence company. Its differenti
 - Website V2 source pack: `C:/Users/Admin/Downloads/7月墨悉官网v2/`.
 - Existing project media library: `F:/Github Projects/melsy/墨悉官网/`.
 - Confirmed copy for the hero, theory, products, four application categories, industrial cooperation, company introduction, company updates, contact, and talent/research network.
-- Demonstration videos for COS, 碎蜂, and the space training ground.
+- Demonstration videos for COS and the space training ground, plus approved product imagery and a brochure for 碎蜂.
 - Research papers, team photography, university logos, and industry-partner assets. Assets do not by themselves grant permission for an unsupported claim.
 
 ## Product Principles

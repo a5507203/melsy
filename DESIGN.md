@@ -38,6 +38,7 @@ The design extends the incumbent brand assets and the approved V2 direction. It 
 - Products form a connected three-stage sequence with decisive media; each stage has a different silhouette.
 - Applications use full-bleed imagery with anchored captions rather than nested cards.
 - Partnership and research proof use editorial lists, timelines, and logo fields with conservative labeling.
+- The collaboration form extends the dark closing surface with two-column technical fields, one clear submit action, and persistent inline loading, success, and recovery states. It never moves the task into a modal.
 - Radii stay between 12–16px for real containers. Pills are reserved for small statuses and controls.
 - Use either a border or elevation to separate a surface, not both.
 
@@ -66,5 +67,6 @@ The design extends the incumbent brand assets and the approved V2 direction. It 
 ## Accessibility and Quality Floor
 
 - WCAG AA text contrast, semantic heading order, skip navigation, visible `:focus-visible`, descriptive link labels, and meaningful alt text.
+- Form errors mark the affected control and move focus to the first invalid field; asynchronous status changes are announced without stealing focus. Submission failures keep the visitor's draft intact.
 - Current-page navigation uses `aria-current="page"`; mobile-menu state is reflected with `aria-expanded`.
 - No unsupported metrics, invented partner relationships, decorative gradient text, dense BP-style dashboards, or inaccessible hover-only disclosure.

@@ -1,0 +1,29 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "melsy-contact",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-08-13",
+  "workers_dev": true,
+  "keep_vars": true,
+  "secrets": {
+    "required": ["RESEND_API_KEY"]
+  },
+  "ratelimits": [
+    {
+      "name": "CONTACT_ACTOR_RATE_LIMITER",
+      "namespace_id": "202608131",
+      "simple": {
+        "limit": 3,
+        "period": 60
+      }
+    },
+    {
+      "name": "CONTACT_GLOBAL_RATE_LIMITER",
+      "namespace_id": "202608132",
+      "simple": {
+        "limit": 10,
+        "period": 60
+      }
+    }
+  ]
+}

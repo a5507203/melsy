@@ -14,8 +14,9 @@ FORM: 中文优先、技术编辑感、宽屏非对称构图；不引入模板�
   <meta name="theme-color" content="#06111a">
   <title>墨悉科技｜协同世界模型</title>
   <link rel="icon" type="image/png" href="assets/v2/brand/melsy-favicon.png?v=1">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="styles.css?v=24">
   <script src="site.js?v=2" defer></script>
+  <script src="contact-form.mjs?v=1" type="module"></script>
 </head>
 <body data-page="home">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -276,6 +277,63 @@ FORM: 中文优先、技术编辑感、宽屏非对称构图；不引入模板�
           <img src="assets/v2/about/contact-qr.jpg" alt="墨悉科技联系二维码" loading="lazy" width="1000" height="1000">
           <span>扫码关注，了解更多</span>
         </figure>
+        <form class="collaboration-form" data-collaboration-form data-submit-url="https://melsy-contact.blueshield-contact-worker.workers.dev/contact" novalidate aria-describedby="collaboration-form-note collaboration-form-status">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="collaboration-country">国家 / 地区 <span aria-hidden="true">*</span></label>
+              <input id="collaboration-country" name="country" type="text" autocomplete="country-name" maxlength="100" required>
+            </div>
+            <div class="form-field">
+              <label for="collaboration-organization-type">机构类型 <span aria-hidden="true">*</span></label>
+              <select id="collaboration-organization-type" name="organizationType" required>
+                <option value="" selected disabled>请选择</option>
+                <option value="government">政府 / 公共机构</option>
+                <option value="enterprise">企业</option>
+                <option value="university">高校 / 科研机构</option>
+                <option value="media">媒体</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="collaboration-given-name">名 <span aria-hidden="true">*</span></label>
+              <input id="collaboration-given-name" name="givenName" type="text" autocomplete="given-name" maxlength="100" required>
+            </div>
+            <div class="form-field">
+              <label for="collaboration-family-name">姓 <span aria-hidden="true">*</span></label>
+              <input id="collaboration-family-name" name="familyName" type="text" autocomplete="family-name" maxlength="100" required>
+            </div>
+            <div class="form-field">
+              <label for="collaboration-email">工作邮箱 <span aria-hidden="true">*</span></label>
+              <input id="collaboration-email" name="workEmail" type="email" autocomplete="email" maxlength="254" required>
+            </div>
+            <div class="form-field">
+              <label for="collaboration-phone">联系电话</label>
+              <input id="collaboration-phone" name="phone" type="tel" autocomplete="tel" maxlength="50">
+            </div>
+            <div class="form-field">
+              <label for="collaboration-organization">公司 / 机构名称</label>
+              <input id="collaboration-organization" name="organizationName" type="text" autocomplete="organization" maxlength="200">
+            </div>
+            <div class="form-field">
+              <label for="collaboration-website">公司 / 机构网站</label>
+              <input id="collaboration-website" name="organizationWebsite" type="url" inputmode="url" autocomplete="url" maxlength="500" placeholder="https://">
+            </div>
+            <div class="form-field form-field-wide">
+              <label for="collaboration-requirements">需求描述 <span aria-hidden="true">*</span></label>
+              <textarea id="collaboration-requirements" name="requirements" rows="7" maxlength="5000" required placeholder="请简要描述应用场景、目标、部署地点、时间要求或希望了解的产品。"></textarea>
+            </div>
+            <div class="form-trap" aria-hidden="true">
+              <label for="collaboration-fax">传真</label>
+              <input id="collaboration-fax" name="fax" type="text" tabindex="-1" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-actions">
+            <p class="form-note" id="collaboration-form-note">带 * 的字段为必填项。提交即表示你同意我们仅为联系与合作沟通处理这些信息；也可扫码与我们联系。</p>
+            <button class="button collaboration-submit" type="submit" data-collaboration-submit disabled><span data-submit-label>提交合作需求</span></button>
+          </div>
+          <p class="form-status" id="collaboration-form-status" data-form-status role="status" aria-live="polite"></p>
+          <noscript><p class="form-status is-error">在线表单需要启用 JavaScript，请扫描上方二维码与墨悉科技联系。</p></noscript>
+        </form>
       </div>
     </section>
   </main>

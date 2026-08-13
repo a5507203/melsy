@@ -9,8 +9,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pageNames = ['index.html', 'about.html', 'research.html'];
-const supportNames = ['styles.css', 'site.js'];
+const pageNames = ['index.html', 'about.html'];
+const supportNames = ['styles.css', 'site.js', 'contact-form.mjs'];
 const archiveIndexPath = path.join(root, 'stale', 'old-homepage', 'index.html');
 const archiveLogoPath = path.join(root, 'stale', 'old-homepage', 'logo.png');
 
@@ -227,7 +227,7 @@ function assertLinksAndFragments(page, pagesByPath) {
       const targetPage = pagesByPath.get(normalizedTarget);
       if (targetPage) targetIds = new Set(extractIds(targetPage.html));
       else if (fragment.length > 0) {
-        assert(false, `${page.name} fragment link must target one of the three public HTML pages: ${href}`);
+        assert(false, `${page.name} fragment link must target one of the two public HTML pages: ${href}`);
       }
     }
 
@@ -269,7 +269,6 @@ function assertNarrativeOrder(indexHtml) {
     ['theory', /<section\b[^>]*id="theory"/i],
     ['products', /<section\b[^>]*id="products"/i],
     ['applications', /<section\b[^>]*id="applications"/i],
-    ['partnership', /<section\b[^>]*id="partnership"/i],
     ['contact', /<section\b[^>]*id="contact"/i],
   ];
   const positions = stages.map(([name, pattern]) => [name, firstIndex(indexHtml, pattern, name)]);
@@ -291,8 +290,7 @@ function assertNarrativeOrder(indexHtml) {
   }
 }
 
-function assertNoFormsOrEnglishEntry(page) {
-  assert(!/<form\b/i.test(page.html), `${page.name} must not contain a submission form`);
+function assertNoEnglishEntry(page) {
   assert(/<html\b[^>]*\blang=["']zh-CN["']/i.test(page.html), `${page.name} must declare lang="zh-CN"`);
   assert(!/\bhreflang=["']en(?:-[^"']+)?["']/i.test(page.html), `${page.name} must not expose an English hreflang entry`);
 
@@ -330,12 +328,10 @@ function assertBusinessContentBoundaries(pages) {
       !/assets\/v2\/research\/industry-partners\//i.test(page.html),
       `${page.name} must not infer public partnerships from unapproved industry-logo assets`,
     );
-    if (page.name !== 'research.html') {
-      assert(
-        !/assets\/v2\/research\/schools\//i.test(page.html),
-        `${page.name} must not publish research-network school logos outside the approved research page`,
-      );
-    }
+    assert(
+      !/assets\/v2\/research\/schools\//i.test(page.html),
+      `${page.name} must not publish removed research-network school logos`,
+    );
   }
 }
 
@@ -382,9 +378,8 @@ function assertVideos(indexHtml) {
   const expected = [
     ['video-training', 'assets/v2/products/training.mp4', 'assets/v2/products/training-poster.jpg'],
     ['video-cos', 'assets/v2/products/cos.mp4', 'assets/v2/products/cos-poster.jpg'],
-    ['video-bee', 'assets/v2/products/bee.mp4?v=2', 'assets/v2/products/bee-poster.jpg?v=2'],
   ];
-  assert(videos.length === expected.length, `index.html must contain exactly three product videos; found ${videos.length}`);
+  assert(videos.length === expected.length, `index.html must contain exactly two product videos; found ${videos.length}`);
 
   const frames = [...indexHtml.matchAll(/<div\b[^>]*data-video-frame[^>]*>([\s\S]*?)<\/div>/gi)];
   assert(frames.length === expected.length, `index.html must contain one fallback frame per product video`);
@@ -415,6 +410,12 @@ function assertVideos(indexHtml) {
 
     probeVideo(sourcePath.split('?')[0]);
   }
+
+  const shardBeeImage = openingTags(indexHtml, 'img').find(
+    (tag) => getAttribute(tag, 'src') === 'assets/v2/products/shard-bee-drone-landscape.jpg',
+  );
+  assert(shardBeeImage, 'the Shard Bee product must use its approved static product image');
+  assert((getAttribute(shardBeeImage, 'alt') ?? '').trim().length > 0, 'the Shard Bee product image must have meaningful alt text');
 }
 
 const rootHtmlFiles = readdirSync(root)
@@ -422,7 +423,7 @@ const rootHtmlFiles = readdirSync(root)
   .sort();
 assert(
   JSON.stringify(rootHtmlFiles) === JSON.stringify([...pageNames].sort()),
-  `website root must expose exactly the three V2 pages; found ${rootHtmlFiles.join(', ')}`,
+  `website root must expose exactly the two public pages; found ${rootHtmlFiles.join(', ')}`,
 );
 
 const pages = pageNames.map((name) => {
@@ -433,9 +434,9 @@ const pagesByName = new Map(pages.map((page) => [page.name, page]));
 const pagesByPath = new Map(pages.map((page) => [path.normalize(page.path).toLowerCase(), page]));
 const styles = readUtf8(path.join(root, supportNames[0]));
 const siteScript = readUtf8(path.join(root, supportNames[1]));
+const contactFormScript = readUtf8(path.join(root, supportNames[2]));
 const indexPage = pagesByName.get('index.html');
 const aboutPage = pagesByName.get('about.html');
-const researchPage = pagesByName.get('research.html');
 
 // Shared document integrity and AS-6 navigation/resource reachability.
 for (const page of pages) {
@@ -447,12 +448,11 @@ for (const page of pages) {
   assert(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']styles\.css(?:\?[^"']*)?["']/i.test(page.html), `${page.name} must load shared styles.css`);
   assertLinksAndFragments(page, pagesByPath);
   assertLocalResources(page, styles);
-  assertNoFormsOrEnglishEntry(page);
+  assertNoEnglishEntry(page);
 }
 
 assertSingleH1(indexPage, '协同世界模型：具身智能时代的新范式');
 assertSingleH1(aboutPage, '面向物理 AI 的具身空间智能公司');
-assertSingleH1(researchPage, '从世界模型到空间智能，构建协同技术底座');
 const aboutTitle = pairedElements(aboutPage.html, 'h1')[0];
 const aboutTitleLines = pairedElements(aboutTitle, 'span').filter((element) =>
   /class=["'][^"']*\babout-title-line\b[^"']*["']/i.test(elementOpeningTag(element)),
@@ -478,7 +478,7 @@ assert(/<a\b[^>]*href=["']#products["'][^>]*>[\s\S]*?产品\s*Demo[\s\S]*?<\/a>/
 // AS-2: the theory section focuses on collaborative intelligence without obsolete era tabs.
 assertVisibleIncludes(indexPage.html, '协同智能时代', 'AS-2 theory section');
 assert(
-  /<div\b[^>]*class=["'][^"']*\bparadigm-current\b[^"']*["'][^>]*>\s*<strong>协同智能时代<\/strong>\s*<\/div>/i.test(indexPage.html),
+  /<span\b[^>]*class=["'][^"']*\bparadigm-title-zh\b[^"']*["'][^>]*>\s*协同智能时代\s*<\/span>/i.test(indexPage.html),
   'AS-2 collaborative intelligence label must not retain a section number',
 );
 for (const copy of ['单智能体时代', '多智能体时代']) {
@@ -508,7 +508,10 @@ assert(
   getAttribute(productDownloadTag, 'href') === 'assets/v2/products/shard-bee-product-brochure.pdf',
   'AS-3 product download must target the published product atlas',
 );
-assert(getAttribute(productDownloadTag, 'download') === '图册1.pdf', 'AS-3 product atlas must download as 图册1.pdf');
+assert(
+  getAttribute(productDownloadTag, 'download') === '碎蜂产品手册.pdf',
+  'AS-3 product atlas must use the descriptive 碎蜂产品手册.pdf download name',
+);
 assertVisibleIncludes(productDownload, '点击下载 PDF', 'AS-3 product download action');
 assert(
   statSync(path.join(root, 'assets/v2/products/shard-bee-product-brochure.pdf')).size < 100 * 1024 * 1024,
@@ -517,67 +520,25 @@ assert(
 
 // AS-4: four named applications, one corresponding image and capability description each.
 const applicationsStart = firstIndex(indexPage.html, /<section\b[^>]*id="applications"/i, 'applications');
-const partnershipStart = firstIndex(indexPage.html, /<section\b[^>]*id="partnership"/i, 'partnership');
-const applicationsHtml = indexPage.html.slice(applicationsStart, partnershipStart);
+const contactStart = firstIndex(indexPage.html, /<section\b[^>]*id="contact"/i, 'contact');
+const applicationsHtml = indexPage.html.slice(applicationsStart, contactStart);
 const applicationTiles = openingTags(applicationsHtml, 'article').filter((tag) => /\bapplication-tile\b/.test(getAttribute(tag, 'class') ?? ''));
 assert(applicationTiles.length === 4, `AS-4 must expose exactly four application tiles; found ${applicationTiles.length}`);
 for (const copy of ['智慧城市与园区管理', '智慧矿区与工业制造', '复杂巡检与应急救援', '国防安全与商业航天']) {
   assertVisibleIncludes(applicationsHtml, copy, 'AS-4 applications');
 }
-assert(openingTags(applicationsHtml, 'img').length === 4, 'AS-4 must provide one image for each application');
-for (const image of openingTags(applicationsHtml, 'img')) {
+const applicationImages = openingTags(applicationsHtml, 'img').filter((tag) =>
+  (getAttribute(tag, 'src') ?? '').startsWith('assets/v2/applications/'),
+);
+assert(applicationImages.length === 4, 'AS-4 must provide one image for each application');
+for (const image of applicationImages) {
   assert((getAttribute(image, 'alt') ?? '').trim().length > 0, 'AS-4 application images must have meaningful alt text');
 }
 
-// AS-5: approved partnership, company, and research evidence only.
-for (const copy of ['北京航空航天大学', '中国某研究院', '中国外运 Sinotrans', '航链科技']) {
-  assertVisibleIncludes(indexPage.html, copy, 'AS-5 partnership evidence');
-}
+// AS-5: approved company evidence only.
 for (const copy of ['悉尼大学 TML 实验室', '2025 年 9 月落户杭州', '公司动态', '一起让协同智能进入真实世界']) {
   assertVisibleIncludes(aboutPage.html, copy, 'AS-5 company evidence');
 }
-for (const copy of [
-  '60+',
-  '机器学习',
-  '世界模型',
-  '多模态',
-  '空间智能',
-  '连接全球科研网络',
-  'HUGE-Bench',
-  'Surprise3D',
-  'OpenInsGaussian',
-  '联合研究',
-  '数据与评测',
-  '系统验证',
-  '新加坡国立大学',
-  '南洋理工大学',
-  '中国科学技术大学',
-  '哈尔滨工业大学',
-  '北京航空航天大学',
-  '南京航空航天大学',
-  '山东大学',
-  '武汉大学',
-]) {
-  assertVisibleIncludes(researchPage.html, copy, 'AS-5 research evidence');
-}
-const institutionLogoWall = pairedElements(researchPage.html, 'ul').find((element) =>
-  /class=["'][^"']*\binstitution-logo-wall\b[^"']*["']/i.test(elementOpeningTag(element)),
-);
-assert(institutionLogoWall, 'research network must render the approved institution logo wall');
-const institutionLogos = openingTags(institutionLogoWall, 'img');
-assert(institutionLogos.length === 8, `research network must render exactly eight school logos; found ${institutionLogos.length}`);
-for (const logo of institutionLogos) {
-  assert(getAttribute(logo, 'alt') === '', 'school logos with visible labels must use empty alt text to avoid duplicate announcements');
-  assert(hasAttribute(logo, 'width') && hasAttribute(logo, 'height'), 'school logos must reserve intrinsic dimensions');
-}
-assert(
-  !/assets\/v2\/research\/team\//i.test(researchPage.html),
-  'research team section must not render portrait images',
-);
-assert(
-  /<div\s+class=["']container partnership-layout["']>\s*<div\s+class=["']partnership-copy["']>[\s\S]*?<\/div>\s*<ul\s+class=["']partnership-points["']>/i.test(researchPage.html),
-  'research team points must occupy the second partnership column',
-);
 assertBusinessContentBoundaries(pages);
 
 // AS-6: every page has desktop/mobile navigation, understandable current state, and contact reachability.
@@ -589,10 +550,67 @@ for (const page of pages) {
   assert(openingTags(page.html, 'nav').some((tag) => hasAttribute(tag, 'data-mobile-panel')), `${page.name} must contain mobile navigation`);
   assertVisibleIncludes(page.html, '商务合作', `${page.name} contact navigation`);
 }
-for (const [page, expectedHref] of [[indexPage, 'index.html'], [aboutPage, 'about.html'], [researchPage, 'research.html']]) {
+for (const [page, expectedHref] of [[indexPage, 'index.html'], [aboutPage, 'about.html']]) {
   const currentLinks = openingTags(page.html, 'a').filter((tag) => getAttribute(tag, 'aria-current') === 'page');
   assert(currentLinks.length >= 1, `${page.name} must identify the current page`);
   assert(currentLinks.every((tag) => getAttribute(tag, 'href') === expectedHref), `${page.name} aria-current links must target ${expectedHref}`);
+}
+
+// AS-9 through AS-12: the collaboration form exposes the agreed contract and real submit states.
+const collaborationForm = pairedElements(indexPage.html, 'form').find((element) =>
+  hasAttribute(elementOpeningTag(element), 'data-collaboration-form'),
+);
+assert(collaborationForm, 'AS-9 homepage contact section must contain the collaboration form');
+const collaborationFields = [
+  ['country', 'input', 'text', true, '100'],
+  ['organizationType', 'select', null, true, null],
+  ['givenName', 'input', 'text', true, '100'],
+  ['familyName', 'input', 'text', true, '100'],
+  ['workEmail', 'input', 'email', true, '254'],
+  ['phone', 'input', 'tel', false, '50'],
+  ['organizationName', 'input', 'text', false, '200'],
+  ['organizationWebsite', 'input', 'url', false, '500'],
+  ['requirements', 'textarea', null, true, '5000'],
+];
+for (const [name, tagName, type, required, maxLength] of collaborationFields) {
+  const tags = openingTags(collaborationForm, tagName).filter((tag) => getAttribute(tag, 'name') === name);
+  assert(tags.length === 1, `AS-9 collaboration form must contain exactly one ${tagName} name="${name}"`);
+  if (type !== null) assert(getAttribute(tags[0], 'type') === type, `AS-9 ${name} must use type="${type}"`);
+  assert(hasAttribute(tags[0], 'required') === required, `AS-9 ${name} required contract must be ${required}`);
+  if (maxLength !== null) assert(getAttribute(tags[0], 'maxlength') === maxLength, `AS-9 ${name} must use maxlength="${maxLength}"`);
+}
+assert(hasAttribute(elementOpeningTag(collaborationForm), 'novalidate'), 'AS-9 form must use the scripted accessible validation flow');
+assert(
+  getAttribute(elementOpeningTag(collaborationForm), 'data-submit-url') === 'https://melsy-contact.blueshield-contact-worker.workers.dev/contact',
+  'AS-10 form must target the dedicated Worker contact endpoint',
+);
+assert(
+  /<script\b[^>]*src=["']contact-form\.mjs(?:\?[^"']*)?["'][^>]*type=["']module["']/i.test(indexPage.html),
+  'AS-10 homepage must load the contact form coordinator as a module',
+);
+const honeypot = openingTags(collaborationForm, 'input').find((tag) => getAttribute(tag, 'name') === 'fax');
+assert(honeypot && getAttribute(honeypot, 'tabindex') === '-1', 'AS-13 form must include a keyboard-inert honeypot');
+const formStatus = openingTags(collaborationForm, 'p').find((tag) => hasAttribute(tag, 'data-form-status'));
+assert(formStatus, 'AS-10 form must expose a status region');
+assert(getAttribute(formStatus, 'role') === 'status', 'AS-10 form status must use role="status"');
+assert(getAttribute(formStatus, 'aria-live') === 'polite', 'AS-10 form status must announce updates politely');
+for (const snippet of [
+  "form.addEventListener('submit'",
+  'event.preventDefault()',
+  'field.checkValidity()',
+  "field.setAttribute('aria-invalid', 'true')",
+  'invalidFields[0].focus()',
+  "form.setAttribute('aria-busy', 'true')",
+  "method: 'POST'",
+  "'Content-Type': 'application/json'",
+  '合作需求已提交',
+  '你的填写内容已保留',
+]) {
+  assert(contactFormScript.includes(snippet), `AS-9/AS-10 collaboration form behavior must include: ${snippet}`);
+}
+for (const forbidden of ['在线提交接口尚未接入', '邮件已送达']) {
+  assertVisibleExcludes(indexPage.html, forbidden, 'AS-10 contact form copy');
+  assert(!contactFormScript.includes(forbidden), `AS-10 contact form script must not contain obsolete/misleading copy: ${forbidden}`);
 }
 for (const snippet of ["'Escape'", "getAttribute('aria-expanded') !== 'true'", "closest('a')", "addEventListener('resize'", "setAttribute('aria-expanded'"]) {
   assert(siteScript.includes(snippet), `AS-6 mobile navigation script must include: ${snippet}`);
@@ -625,4 +643,4 @@ assertVisibleIncludes(archivedHtml, 'AI Agent', 'archived homepage identity');
 assertVisibleIncludes(archivedHtml, '赋能实体世界', 'archived homepage identity');
 assert(archivedHtml !== indexPage.html, 'archived homepage must remain distinct from the V2 homepage');
 
-console.log('site smoke checks passed: V2 pages, AS-1..AS-8, media codecs, and archive migration protection');
+console.log('site smoke checks passed: public pages, AS-1..AS-13, media codecs, and archive migration protection');

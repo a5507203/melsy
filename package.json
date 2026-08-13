@@ -1,0 +1,15 @@
+{
+  "name": "melsy-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/contact-form.test.mjs worker/test/contact-worker.test.mjs && node tests/site-smoke.mjs",
+    "worker:dry-run": "wrangler deploy --config worker/wrangler.jsonc --dry-run --outdir dist",
+    "worker:deploy": "wrangler deploy --config worker/wrangler.jsonc --keep-vars"
+  },
+  "devDependencies": {
+    "happy-dom": "20.11.2",
+    "wrangler": "4.122.0"
+  }
+}

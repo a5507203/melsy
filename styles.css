@@ -1096,6 +1096,176 @@ body:not([data-page="home"]) .site-header {
   align-items: center;
 }
 
+.collaboration-form {
+  grid-column: 1 / -1;
+  margin-top: clamp(1rem, 2vw, 2rem);
+  padding-top: clamp(2rem, 4vw, 3.5rem);
+  border-top: 1px solid var(--line-dark);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.7rem 1.5rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.form-field-wide {
+  grid-column: 1 / -1;
+}
+
+.form-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-field label {
+  color: #d7e8f1;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.form-field label span {
+  color: #75bde8;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid rgba(142, 187, 214, 0.28);
+  border-radius: 12px;
+  background: rgba(13, 29, 41, 0.88);
+  color: #f7fbfe;
+  font: inherit;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.form-field input,
+.form-field select {
+  min-height: 3.75rem;
+  padding: 0.85rem 1rem;
+}
+
+.form-field textarea {
+  min-height: 12rem;
+  padding: 1rem;
+  resize: vertical;
+}
+
+.form-field select {
+  color-scheme: dark;
+}
+
+.form-field select:required:invalid {
+  color: #819cab;
+}
+
+.form-field select option {
+  background: var(--night-raised);
+  color: #f7fbfe;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: #819cab;
+  opacity: 1;
+}
+
+.form-field input:hover,
+.form-field select:hover,
+.form-field textarea:hover {
+  border-color: rgba(142, 187, 214, 0.5);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: #75bde8;
+  background: var(--night-raised);
+  outline: 3px solid rgba(117, 189, 232, 0.24);
+  outline-offset: 2px;
+}
+
+.form-field input[aria-invalid="true"],
+.form-field select[aria-invalid="true"],
+.form-field textarea[aria-invalid="true"] {
+  border-color: #ef6a74;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.collaboration-submit {
+  min-width: 12rem;
+  border: 0;
+  background: var(--brand-red);
+  color: #fff;
+  cursor: pointer;
+}
+
+.collaboration-submit:hover {
+  background: #ce2637;
+}
+
+.collaboration-submit:disabled,
+.collaboration-submit:disabled:hover {
+  transform: none;
+  background: #6e2832;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: not-allowed;
+}
+
+.collaboration-form[aria-busy="true"] .collaboration-submit {
+  position: relative;
+  padding-right: 3.35rem;
+}
+
+.collaboration-form[aria-busy="true"] .collaboration-submit::after {
+  position: absolute;
+  right: 1.25rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: form-submit-spin 720ms linear infinite;
+  content: "";
+}
+
+.form-status {
+  min-height: 1.65rem;
+  margin: 1rem 0 0;
+  color: #9fd4f0;
+  font-weight: 650;
+}
+
+.form-status.is-error {
+  color: #ff9ba3;
+}
+
+.form-status.is-success {
+  color: #a9e6c4;
+}
+
+@keyframes form-submit-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .contact-layout h2 {
   max-width: 13ch;
   margin-bottom: 1.2rem;
@@ -1753,6 +1923,23 @@ body:not([data-page="home"]) .site-header {
   .contact-details,
   .research-pillars {
     grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field-wide {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .collaboration-submit {
+    width: 100%;
   }
 
   .institution-logo-wall {
