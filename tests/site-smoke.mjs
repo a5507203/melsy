@@ -536,7 +536,7 @@ for (const image of applicationImages) {
 }
 
 // AS-5: approved company evidence only.
-for (const copy of ['悉尼大学 TML 实验室', '2025 年 9 月落户杭州', '公司动态', '一起让协同智能进入真实世界']) {
+for (const copy of ['墨悉科技于 2025 年 9 月落户杭州。', '公司动态', '一起让协同智能进入真实世界']) {
   assertVisibleIncludes(aboutPage.html, copy, 'AS-5 company evidence');
 }
 assertBusinessContentBoundaries(pages);
